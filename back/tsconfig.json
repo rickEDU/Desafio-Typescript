@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+      "target": "ES6",
+      "noEmitOnError": true,
+      "noImplicitAny": true,
+      "strict": true,
+      "module": "es6",
+      "lib": [
+        "ES6",
+        "DOM"
+      ],
+      "outDir": "./dist",
+      "moduleResolution": "node",
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true
+  },
+}
