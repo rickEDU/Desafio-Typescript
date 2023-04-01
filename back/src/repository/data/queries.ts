@@ -18,9 +18,9 @@ SELECT * FROM ${tableUsers};
 `;
 
 const getUser = `
-SELECT ${allCollumns}
+SELECT *
 FROM public.${tableUsers} 
-WHERE username = $1 AND password = $2;
+WHERE username = $1;
 `;
 
 const insertUser = `
@@ -38,12 +38,10 @@ WHERE id = $1
 RETURNING *;
 `;
 
-
-
 // Objeto com todas as constantes.
 export const query = {
   getUsers,
   getUser,
   insertUser,
-  updateUser
+  updateUser,
 };
