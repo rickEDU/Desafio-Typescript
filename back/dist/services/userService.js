@@ -17,7 +17,16 @@ export class AccountsService {
     createUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const dbResponse = yield accountsRepo.createUser(user);
+                const hashedPassword = bcrypt.hashSync(user.password, 10);
+                const data = {
+                    username: user.username,
+                    email: user.email,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    password: hashedPassword,
+                    isAdmin: "false"
+                };
+                const dbResponse = yield accountsRepo.createUser(data);
                 return dbResponse;
             }
             catch (error) {
@@ -32,8 +41,7 @@ export class LoginService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 //CONSERTAR DEPOIS: TEM QUE FAZER O HASH DA SENHA AQUI
-                const hashedPassword = bcrypt.hashSync(password, 10);
-                console.log("hash:", hashedPassword);
+                // const hashedPassword = bcrypt.hashSync(password, 10);
                 const dbResponse = yield accountsRepo.SelectUser(username, password);
                 return dbResponse;
             }

@@ -12,7 +12,18 @@ const TAG = "userService";
 export class AccountsService {
   public async createUser(user: IUser) {
     try {
-      const dbResponse = await accountsRepo.createUser(user);
+      const hashedPassword = bcrypt.hashSync(user.password, 10);
+
+      const data:IUser = {
+        username:user.username,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: hashedPassword,
+        isAdmin: "false"
+      }
+      
+      const dbResponse = await accountsRepo.createUser(data);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");
