@@ -42,6 +42,23 @@ export class LoginService {
             try {
                 //CONSERTAR DEPOIS: TEM QUE FAZER O HASH DA SENHA AQUI
                 // const hashedPassword = bcrypt.hashSync(password, 10);
+
+                const dbResponse = yield accountsRepo.SelectUser(username);
+                //// Verifica se a senha está correta
+                const isPasswordValid = bcrypt.compareSync(password, dbResponse.password);
+                if (!isPasswordValid) {
+                    throw "Senha inválida";
+                }
+                const data = {
+                    id: dbResponse.id,
+                    username: dbResponse.username,
+                    email: dbResponse.email,
+                    first_name: dbResponse.first_name,
+                    last_name: dbResponse.last_name,
+                    is_admin: dbResponse.id_admin,
+                };
+                return data;
+
                 const dbResponse = yield accountsRepo.SelectUser(username, password);
                 return dbResponse;
             }

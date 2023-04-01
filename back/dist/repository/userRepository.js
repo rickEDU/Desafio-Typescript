@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { connectDb } from "./data/connection.js";
 import { query } from "./data/queries.js";
-import bcrypt from "bcrypt";
 const TAG = "userRepository";
 export class Accountsrepo {
     createUser(user) {
@@ -40,7 +39,7 @@ export class Accountsrepo {
             }
         });
     }
-    SelectUser(username, password) {
+    SelectUser(username) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Verificando se já está cadastrado no banco de dados
@@ -48,6 +47,11 @@ export class Accountsrepo {
                 if (user.length === 0) {
                     throw "Usuário não está cadastrado";
                 }
+
+                //CONSERTAR DEPPOIS o tipo do data:
+                //   const data: any = user[0];
+                return user[0];
+
                 //// Verifica se a senha está correta
                 const isPasswordValid = bcrypt.compareSync(password, user[0].password);
                 if (!isPasswordValid) {
@@ -64,6 +68,7 @@ export class Accountsrepo {
                 //CONSERTAR DEPPOIS o tipo do data:
                 //   const data: any = user[0];
                 return data;
+
             }
             catch (error) {
                 console.log(TAG, "error caught at createUser()");
