@@ -1,5 +1,5 @@
 import {Accountsrepo} from "../repository/userRepository.js";
-import { IUser } from "../interfaces/interfaces.js";
+import { IUser } from "../interfaces/userInterfaces.js";
 
 
 const accountsRepo = new Accountsrepo();
@@ -10,14 +10,11 @@ const accountsRepo = new Accountsrepo();
 
 const TAG = "userService";
 
-
 export class AccountsService{
-  public async createUser({username, email, password}:IUser){
+  public async createUser(user:IUser){
       try {
         const dbResponse = await accountsRepo.createUser(
-          {username,
-          email,
-          password}
+          user
         );
         return dbResponse;
       } catch (error) {
@@ -25,6 +22,19 @@ export class AccountsService{
         throw error;
       }
     }
+}
+
+export class LoginService{
+  public async LoginUser(username:string, password:string){
+    try{
+      //CONSERTAR DEPOIS: TEM QUE FAZER O HASH DA SENHA AQUI
+      const dbResponse = await accountsRepo.SelectUser(username, password)
+      return dbResponse;
+    }catch (error){
+      console.log(TAG, "error caught at");
+      throw error;
+    }
+  }
 }
 
 
