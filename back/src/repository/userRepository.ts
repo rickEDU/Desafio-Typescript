@@ -17,8 +17,7 @@ export class Accountsrepo {
     try {
       // Verificando se já está cadastrado no banco de dados
       const userVerify = await connectDb(query.getUser, [
-        user.username,
-        user.password,
+        user.username
       ]);
       if (userVerify.length !== 0) {
         throw "Usuário já cadastrado";
@@ -28,8 +27,8 @@ export class Accountsrepo {
         user.email,
         user.firstName,
         user.lastName,
-        user.isAdmin,
         user.password,
+        user.isAdmin,
       ]);
 
       const data: IUser = response[0];

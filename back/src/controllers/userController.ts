@@ -49,12 +49,12 @@ export class AccountsController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível criar um usuário!";
+      response.message = "Não foi possível criar o usuário!";
       response.data = null;
       response.error = error;
 
       res.status(500);
-      res.json(JSON.stringify(response));
+      res.json(response);
     }
   }
 }

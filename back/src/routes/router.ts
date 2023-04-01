@@ -7,7 +7,7 @@ const route: Router = Router();
 const accountsController = new AccountsController();
 const loginController = new LoginController();
 
-route.post("/accounts", accountsController.createUser);
+route.post("/users", accountsController.createUser);
 route.post("/login", loginController.login);
 // route.post("/accounts/login", accountsController.login);
 // route.get('/getAll', accountsController.getAllUsers);

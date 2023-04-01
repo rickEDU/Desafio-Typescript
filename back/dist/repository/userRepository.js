@@ -17,8 +17,7 @@ export class Accountsrepo {
             try {
                 // Verificando se já está cadastrado no banco de dados
                 const userVerify = yield connectDb(query.getUser, [
-                    user.username,
-                    user.password,
+                    user.username
                 ]);
                 if (userVerify.length !== 0) {
                     throw "Usuário já cadastrado";
@@ -28,8 +27,8 @@ export class Accountsrepo {
                     user.email,
                     user.firstName,
                     user.lastName,
-                    user.isAdmin,
                     user.password,
+                    user.isAdmin,
                 ]);
                 const data = response[0];
                 //     console.log(data, "response from DB")
@@ -51,7 +50,6 @@ export class Accountsrepo {
                 }
                 //// Verifica se a senha está correta
                 const isPasswordValid = bcrypt.compareSync(password, user[0].password);
-                console.log("teste comparativo", isPasswordValid);
                 if (!isPasswordValid) {
                     throw "Senha inválida";
                 }
@@ -65,7 +63,6 @@ export class Accountsrepo {
                 };
                 //CONSERTAR DEPPOIS o tipo do data:
                 //   const data: any = user[0];
-                //  console.log(data, "response from DB")
                 return data;
             }
             catch (error) {

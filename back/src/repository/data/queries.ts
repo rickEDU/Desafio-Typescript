@@ -24,7 +24,7 @@ WHERE username = $1;
 `;
 
 const insertUser = `
-INSERT INTO ${tableUsers}(id, username, email, first_name, last_name, is_admin, password )
+INSERT INTO ${tableUsers}(id, username, email, first_name, last_name, password, is_admin )
 VALUES (gen_random_uuid(),$1, $2, $3, $4, $5, $6)
 RETURNING ${allCollumns};
 `;
