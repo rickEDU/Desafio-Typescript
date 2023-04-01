@@ -30,6 +30,18 @@ export class AccountsService {
       throw error;
     }
   }
+
+
+  public async deleteUser(id:string) {
+    try {
+      //consertar os tipos da resposta dbResponse
+      const dbResponse = await accountsRepo.deleteUser(id);
+      return dbResponse;
+    } catch (error) {
+      console.log(TAG, "error caught at");
+      throw error;
+    }
+  }
 }
 
 export class LoginService {
@@ -50,7 +62,7 @@ export class LoginService {
         email:dbResponse.email,
         first_name:dbResponse.first_name,
         last_name:dbResponse.last_name,
-        is_admin:dbResponse.id_admin,
+        is_admin:dbResponse.is_admin,
       };
       return data;
     } catch (error) {

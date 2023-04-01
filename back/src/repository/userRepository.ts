@@ -40,6 +40,26 @@ export class Accountsrepo {
     }
   }
 
+  public async deleteUser(id: string) {
+    try {
+      // Verificando o usuário é lider de uma equipe
+      const userVerifyLeader = await connectDb(query.leaderSquad, [id]);
+      if (userVerifyLeader.length !== 0) {
+        throw "Usuário é lider de uma equipe";
+      }
+      const response = await connectDb(query.deleteUser, [id]);
+      if(response.length === 0){
+        throw 'Usuário não encontrado'
+      }
+      const data: IUser = response[0];
+      //     console.log(data, "response from DB")
+      return data;
+    } catch (error) {
+      console.log(TAG, "error caught at deleteUser()");
+      throw error;
+    }
+  }
+
   public async SelectUser(username: string) {
     try {
       // Verificando se já está cadastrado no banco de dados

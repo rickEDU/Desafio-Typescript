@@ -22,6 +22,12 @@ SELECT *
 FROM public.${tableUsers} 
 WHERE username = $1;
 `;
+const deleteUser = `
+DELETE
+FROM public.${tableUsers} 
+WHERE id = $1
+RETURNING ${allCollumns};
+`;
 
 const insertUser = `
 INSERT INTO ${tableUsers}(id, username, email, first_name, last_name, password, is_admin )
@@ -38,10 +44,18 @@ WHERE id = $1
 RETURNING *;
 `;
 
+
+const leaderSquad = `
+SELECT *
+FROM equipe
+WHERE leader=$1
+`
 // Objeto com todas as constantes.
 export const query = {
   getUsers,
   getUser,
+  deleteUser,
   insertUser,
   updateUser,
+  leaderSquad,
 };
