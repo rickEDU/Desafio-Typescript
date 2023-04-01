@@ -5,8 +5,8 @@ class Validator {
 }
 class StringValidator extends Validator {
     constructor(data) {
-        if (typeof data !== 'string')
-            throw new Error("O tipo deve ser uma string");
+        if (typeof data !== "string")
+            throw "O tipo deve ser uma string";
         else
             super(data);
     }
@@ -16,7 +16,7 @@ class RegexValidator extends StringValidator {
         super(data);
         this._regex = new RegExp("");
         if (!this.regex.test(data))
-            throw new Error("O tipo está errado");
+            throw "O tipo está errado";
     }
     // Propriedade getter "regex"
     get regex() {
