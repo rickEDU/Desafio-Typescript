@@ -49,7 +49,6 @@ export class AccountsController {
 export class LoginController {
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(process.env.JWTSECRET);
             const response = {
                 message: "",
                 data: null,
