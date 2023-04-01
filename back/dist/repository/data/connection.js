@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import pool from "../../pool/index.js";
-console.log(process.env.USERPG, "connection");
 export function connectDb(query, arrayColumns) {
     return __awaiter(this, void 0, void 0, function* () {
         const client = yield pool.connect();
