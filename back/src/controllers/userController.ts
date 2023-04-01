@@ -21,7 +21,6 @@ const loginService = new LoginService();
 
 export class AccountsController {
   public async createUser(req: Request, res: Response) {
-    // console.log("req.body", req.body);
 
     // Padronizar a resposta
 
@@ -40,7 +39,6 @@ export class AccountsController {
 
       const serviceResponse = await accountsService.createUser(user);
 
-      // console.log(serviceResponse, "resposta");
       response.message = "Usuário criado com sucesso!";
       response.data = serviceResponse;
       response.error = null;
@@ -50,6 +48,39 @@ export class AccountsController {
       console.log(TAG, "\n", error);
 
       response.message = "Não foi possível criar o usuário!";
+      response.data = null;
+      response.error = error;
+
+      res.status(500);
+      res.json(response);
+    }
+  }
+  public async deleteUser(req: Request, res: Response) {
+
+    // Padronizar a resposta
+    const response: ApiResponse<ApiResponseData> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+
+    try {
+      const { decoded }: any = req.body;
+      const id_regex:string = req.params.user_id.replace(/ /g, "");
+      if(!decoded.user.is_admin){
+        throw 'Error: não é um Administrador'
+      }
+      const serviceResponse = await accountsService.deleteUser(id_regex);
+
+      response.message = "Usuário deletado com sucesso!";
+      response.data = serviceResponse;
+      response.error = null;
+
+      res.status(200).json(response);
+    } catch (error) {
+      console.log(TAG, "\n", error);
+
+      response.message = "Não foi possível deletar o usuário!";
       response.data = null;
       response.error = error;
 
@@ -80,7 +111,6 @@ export class LoginController {
       new PasswordValidator(password);
 
       const responseLogin = await loginService.LoginUser(username, password);
-
       const secretKey: string | undefined = process.env.JWTSECRET;
 
       if (!secretKey) {
