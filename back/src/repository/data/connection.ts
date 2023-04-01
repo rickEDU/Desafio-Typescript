@@ -1,12 +1,11 @@
 import pool from "../../pool/index.js";
 
-console.log(process.env.USERPG, "connection");
 export async function connectDb(
   query: string,
   arrayColumns: Array<string | number>
-  ) {
-    const client = await pool.connect();
-    
+) {
+  const client = await pool.connect();
+
   try {
     await client.query("BEGIN");
 

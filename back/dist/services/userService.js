@@ -8,17 +8,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { Accountsrepo } from "../repository/userRepository.js";
+import bcrypt from "bcrypt";
 const accountsRepo = new Accountsrepo();
 // import JWT from "jsonwebtoken";
 // import { config } from "dotenv";
 const TAG = "userService";
 export class AccountsService {
-    createUser({ username, email, password }) {
+    createUser(user) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const dbResponse = yield accountsRepo.createUser({ username,
-                    email,
-                    password });
+                const dbResponse = yield accountsRepo.createUser(user);
+                return dbResponse;
+            }
+            catch (error) {
+                console.log(TAG, "error caught at");
+                throw error;
+            }
+        });
+    }
+}
+export class LoginService {
+    LoginUser(username, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                //CONSERTAR DEPOIS: TEM QUE FAZER O HASH DA SENHA AQUI
+                const hashedPassword = bcrypt.hashSync(password, 10);
+                console.log("hash:", hashedPassword);
+                const dbResponse = yield accountsRepo.SelectUser(username, password);
                 return dbResponse;
             }
             catch (error) {
