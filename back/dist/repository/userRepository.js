@@ -16,8 +16,7 @@ export class Accountsrepo {
             try {
                 // Verificando se já está cadastrado no banco de dados
                 const userVerify = yield connectDb(query.getUser, [
-                    user.username,
-                    user.password,
+                    user.username
                 ]);
                 if (userVerify.length !== 0) {
                     throw "Usuário já cadastrado";
@@ -27,8 +26,8 @@ export class Accountsrepo {
                     user.email,
                     user.firstName,
                     user.lastName,
-                    user.isAdmin,
                     user.password,
+                    user.isAdmin,
                 ]);
                 const data = response[0];
                 //     console.log(data, "response from DB")
@@ -48,9 +47,28 @@ export class Accountsrepo {
                 if (user.length === 0) {
                     throw "Usuário não está cadastrado";
                 }
+<<<<<<< HEAD
                 //CONSERTAR DEPPOIS o tipo do data:
                 //   const data: any = user[0];
                 return user[0];
+=======
+                //// Verifica se a senha está correta
+                const isPasswordValid = bcrypt.compareSync(password, user[0].password);
+                if (!isPasswordValid) {
+                    throw "Senha inválida";
+                }
+                const data = {
+                    id: user[0].id,
+                    username: user[0].username,
+                    email: user[0].email,
+                    first_name: user[0].first_name,
+                    last_name: user[0].last_name,
+                    is_admin: user[0].id_admin,
+                };
+                //CONSERTAR DEPPOIS o tipo do data:
+                //   const data: any = user[0];
+                return data;
+>>>>>>> main
             }
             catch (error) {
                 console.log(TAG, "error caught at createUser()");
