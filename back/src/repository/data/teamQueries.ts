@@ -2,8 +2,6 @@
 const teamTable = "equipe";
 const allCollumns = `id, name, leader`;
 
-/* Table team */
-
 // Seleciona todas as informações da tabela
 const getTeams = `
 SELECT * FROM ${teamTable};

@@ -15,4 +15,14 @@ export class TeamService {
       throw error;
     }
   }
+  public async deleteTeam(idSquad: string) {
+    try {
+      //consertar os tipos da resposta dbResponse
+      const dbResponse = await teamRepo.deleteTeam(idSquad);
+      return dbResponse;
+    } catch (error) {
+      console.log(TAG, "error caught at");
+      throw error;
+    }
+  }
 }
