@@ -3,7 +3,7 @@ import { UUID } from "crypto";
 export type ApiResponseData = IUser | ILoginData | null;
 
 export interface IUserDataComplete {
-  user_id: string;
+  user_id: UUID;
   username: string;
   email: string;
   password: string;
@@ -21,13 +21,13 @@ export interface IUserDataComplete {
 // }
 
 export interface IUser {
-  id?: string;
+  id?: UUID;
   username: string;
   email: string;
   firstName: string;
   lastName: string;
   password: string;
-  squad?: string;
+  squad?: UUID;
   isAdmin: string;
 }
 
@@ -43,5 +43,5 @@ export interface ApiResponse<T> {
 }
 
 export interface ILoginData {
-  id: any;
+  id: UUID;
 }

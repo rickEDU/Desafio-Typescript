@@ -84,6 +84,7 @@ export class LoginService {
         email: dbResponse.email,
         first_name: dbResponse.first_name,
         last_name: dbResponse.last_name,
+        squad: dbResponse.squad,
         is_admin: dbResponse.is_admin,
       };
       return data;

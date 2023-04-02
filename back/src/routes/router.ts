@@ -22,6 +22,12 @@ route.post("/login", loginController.login);
 route.patch("/users/:user_id", Auth.authenticated, accountsController.updateUser);
 
 route.post("/teams/", Auth.authenticated, teamController.createTeam);
+route.delete(
+  "/teams/:team_id",
+  Auth.authenticated,
+  Auth.isAdmin,
+  teamController.deleteTeam
+);
 
 
 route.get("/auth", Auth.authenticated);

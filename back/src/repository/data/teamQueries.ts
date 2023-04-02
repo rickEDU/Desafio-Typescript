@@ -2,8 +2,6 @@
 const teamTable = "equipe";
 const allCollumns = `id, name, leader`;
 
-/* Table team */
-
 // Seleciona todas as informações da tabela
 const getTeams = `
 SELECT * FROM ${teamTable};
@@ -29,7 +27,7 @@ RETURNING ${allCollumns};
 const getUser = `
 SELECT *
 FROM public.usuario
-WHERE id = $1;
+WHERE id=$1;
 `;
 
 const insertTeam = `
@@ -46,6 +44,13 @@ WHERE id = $1
 RETURNING *;
 `;
 
+const updateUserSquad = `
+UPDATE usuario
+SET squad = $1
+
+WHERE id = $2
+RETURNING *;
+`;
 // Objeto com todas as constantes.
 export const teamQuery = {
   getTeams,
@@ -55,4 +60,5 @@ export const teamQuery = {
   insertTeam,
   updateTeam,
   getUser,
+  updateUserSquad,
 };

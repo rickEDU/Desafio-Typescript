@@ -1,9 +1,11 @@
+import { UUID } from "crypto";
+
 export interface ITeam {
   name: string;
-  leader: string;
+  leader: UUID;
 }
 export interface ITeamResponse {
-  id: string;
+  id: UUID;
   name: string;
-  leader: string;
+  leader: UUID;
 }

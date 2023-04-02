@@ -1,4 +1,3 @@
-import pool from "../pool/index.js";
 import {
   ILogin,
   ILoginData,
@@ -8,7 +7,6 @@ import {
 } from "../interfaces/userInterfaces";
 import { connectDb } from "./data/connection.js";
 import { query } from "./data/queries.js";
-import bcrypt from "bcrypt";
 
 const TAG = "userRepository";
 
