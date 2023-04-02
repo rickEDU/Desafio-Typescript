@@ -44,12 +44,11 @@ WHERE id = $1
 RETURNING *;
 `;
 
-
 const leaderSquad = `
 SELECT *
 FROM equipe
 WHERE leader=$1
-`
+`;
 // Objeto com todas as constantes.
 export const query = {
   getUsers,

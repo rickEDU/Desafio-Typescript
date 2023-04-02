@@ -14,15 +14,15 @@ export class AccountsService {
     try {
       const hashedPassword = bcrypt.hashSync(user.password, 10);
 
-      const data:IUser = {
-        username:user.username,
+      const data: IUser = {
+        username: user.username,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
         password: hashedPassword,
-        isAdmin: "false"
-      }
-      
+        isAdmin: "false",
+      };
+
       const dbResponse = await accountsRepo.createUser(data);
       return dbResponse;
     } catch (error) {
@@ -31,8 +31,7 @@ export class AccountsService {
     }
   }
 
-
-  public async deleteUser(id:string) {
+  public async deleteUser(id: string) {
     try {
       //consertar os tipos da resposta dbResponse
       const dbResponse = await accountsRepo.deleteUser(id);
@@ -57,12 +56,12 @@ export class LoginService {
         throw "Senha inválida";
       }
       const data = {
-        id:dbResponse.id,
-        username:dbResponse.username,
-        email:dbResponse.email,
-        first_name:dbResponse.first_name,
-        last_name:dbResponse.last_name,
-        is_admin:dbResponse.is_admin,
+        id: dbResponse.id,
+        username: dbResponse.username,
+        email: dbResponse.email,
+        first_name: dbResponse.first_name,
+        last_name: dbResponse.last_name,
+        is_admin: dbResponse.is_admin,
       };
       return data;
     } catch (error) {

@@ -21,7 +21,6 @@ const loginService = new LoginService();
 
 export class AccountsController {
   public async createUser(req: Request, res: Response) {
-
     // Padronizar a resposta
 
     const response: ApiResponse<ApiResponseData> = {
@@ -56,7 +55,6 @@ export class AccountsController {
     }
   }
   public async deleteUser(req: Request, res: Response) {
-
     // Padronizar a resposta
     const response: ApiResponse<ApiResponseData> = {
       message: "",
@@ -66,9 +64,9 @@ export class AccountsController {
 
     try {
       const { decoded }: any = req.body;
-      const id_regex:string = req.params.user_id.replace(/ /g, "");
-      if(!decoded.user.is_admin){
-        throw 'Error: não é um Administrador'
+      const id_regex: string = req.params.user_id.replace(/ /g, "");
+      if (!decoded.user.is_admin) {
+        throw "Error: não é um Administrador";
       }
       const serviceResponse = await accountsService.deleteUser(id_regex);
 

@@ -1,5 +1,5 @@
-export interface ITeam{
-    id: string;
-    name: string;
-    leader: string;
+export interface ITeam {
+  id: string;
+  name: string;
+  leader: string;
 }
