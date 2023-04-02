@@ -71,6 +71,7 @@ export class AccountsController {
       if(!decoded.user.is_admin && req.body.is_admin !== undefined){
         throw 'Error: Esse usuário não pode alterar a coluna de Administrador'
       }
+
       const user: IUser = req.body;
 
       // new NameValidator(user.username);
@@ -132,7 +133,7 @@ export class AccountsController {
 
 export class LoginController {
   public async login(req: Request, res: Response) {
-    // type ApiResponseData = IUser | IUser | ILoginData | null;
+    type ApiResponseData = IUser | IUser | ILoginData | null;
 
     const response: ApiResponse<ApiResponseData> = {
       message: "",
