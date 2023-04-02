@@ -49,20 +49,27 @@ export class TeamRepo {
 
   public async deleteTeam(idSquad: string) {
     try {
+      // Fazer verificação caso não tenha equipes
       // Verificando o usuário é lider de uma equipe
       const userVerifySquad = await connectDb(query.selectUserSquad, [idSquad]);
-      if (userVerifySquad.length !== 0) {
+
+      if (userVerifySquad.length === 0) {
+        throw "Equipe não cadastrada";
+      }
+
+      if (userVerifySquad.length > 1) {
         throw "Existe usuários na equipe";
+      } else {
+        const updateLeader = await connectDb(query.updateUserSquad, [
+          userVerifySquad[0],
+          null,
+        ]);
       }
 
       const response = await connectDb(teamQuery.deleteTeam, [idSquad]);
-      // if (response.length === 0) {
-      //   throw "Usuário não encontrado";
-      // }
       console.log(response, "teste do delete");
 
       const data: any = response[0];
-      //     console.log(data, "response from DB")
       return data;
     } catch (error) {
       console.log(TAG, "error caught at deleteUser()");

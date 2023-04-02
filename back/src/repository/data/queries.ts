@@ -58,7 +58,15 @@ WHERE leader=$1
 const selectUserSquad = `
 SELECT *
 FROM ${tableUsers}
-WHERE squad=$1;
+WHERE squad=$1
+RETURNING id;
+`;
+
+const updateUserSquad = `
+UPDATE ${tableUsers}
+SET squad = $2,
+WHERE id = $1
+RETURNING *;
 `;
 
 // Objeto com todas as constantes.
@@ -70,4 +78,5 @@ export const query = {
   updateUser,
   leaderSquad,
   selectUserSquad,
+  updateUserSquad,
 };
