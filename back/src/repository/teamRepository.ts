@@ -1,10 +1,10 @@
 import pool from "../pool/index.js";
-import { ITeam } from "../interfaces/teamInterfaces.js";
+import { ITeam, ITeamResponse } from "../interfaces/teamInterfaces.js";
 import { connectDb } from "./data/connection.js";
 import { teamQuery } from "./data/teamQueries.js";
 import { query } from "./data/queries.js";
 
-const TAG = "userRepository";
+const TAG = "teamRepository";
 
 export class TeamRepo {
   public async createTeam(team: ITeam) {
@@ -22,12 +22,11 @@ export class TeamRepo {
       }
 
       const response = await connectDb(teamQuery.insertTeam, [
-        team.id,
         team.name,
         team.leader,
       ]);
 
-      const data: ITeam = response[0];
+      const data: ITeamResponse = response[0];
       //     console.log(data, "response from DB")
       return data;
     } catch (error) {

@@ -25,7 +25,6 @@ export class TeamController {
 
       new NameValidator(team.name);
       new StringValidator(team.leader);
-      new StringValidator(team.id);
 
       const serviceResponse = await teamService.createTeam(team);
 
@@ -37,7 +36,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível criar o Equipe!";
+      response.message = "Não foi possível criar a Equipe!";
       response.data = null;
       response.error = error;
 
