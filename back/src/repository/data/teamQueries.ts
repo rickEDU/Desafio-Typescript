@@ -26,6 +26,11 @@ FROM public.${teamTable}
 WHERE id = $1
 RETURNING ${allCollumns};
 `;
+const getUser = `
+SELECT *
+FROM public.usuario
+WHERE id = $1;
+`;
 
 const insertTeam = `
 INSERT INTO ${teamTable}(${allCollumns})
@@ -49,4 +54,5 @@ export const teamQuery = {
   deleteTeam,
   insertTeam,
   updateTeam,
+  getUser,
 };
