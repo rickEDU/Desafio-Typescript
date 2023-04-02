@@ -1,4 +1,3 @@
-import pool from "../pool/index.js";
 import { ITeam, ITeamResponse } from "../interfaces/teamInterfaces.js";
 import { connectDb } from "./data/connection.js";
 import { teamQuery } from "./data/teamQueries.js";
@@ -35,6 +34,29 @@ export class TeamRepo {
       return data;
     } catch (error) {
       console.log(TAG, "error caught at createTeam()");
+      throw error;
+    }
+  }
+
+  public async deleteTeam(idSquad: string) {
+    try {
+      // Verificando o usuário é lider de uma equipe
+      const userVerifySquad = await connectDb(query.selectUserSquad, [idSquad]);
+      if (userVerifySquad.length !== 0) {
+        throw "Existe usuários na equipe";
+      }
+
+      const response = await connectDb(teamQuery.deleteTeam, [idSquad]);
+      // if (response.length === 0) {
+      //   throw "Usuário não encontrado";
+      // }
+      console.log(response, "teste do delete");
+
+      const data: any = response[0];
+      //     console.log(data, "response from DB")
+      return data;
+    } catch (error) {
+      console.log(TAG, "error caught at deleteUser()");
       throw error;
     }
   }

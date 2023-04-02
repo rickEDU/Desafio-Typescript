@@ -90,7 +90,7 @@ export class AccountsController {
 
 export class LoginController {
   public async login(req: Request, res: Response) {
-    type ApiResponseData = IUser | IUser | ILoginData | null;
+    // type ApiResponseData = IUser | IUser | ILoginData | null;
 
     const response: ApiResponse<ApiResponseData> = {
       message: "",

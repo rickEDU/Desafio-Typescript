@@ -44,4 +44,32 @@ export class TeamController {
       res.json(response);
     }
   }
+
+  public async deleteTeam(req: Request, res: Response) {
+    // Padronizar a resposta
+    const response: ApiResponse<ApiResponseData> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+
+    try {
+      const serviceResponse = await teamService.deleteTeam(req.params.team_id);
+
+      response.message = "Usuário deletado com sucesso!";
+      response.data = serviceResponse;
+      response.error = null;
+
+      res.status(200).json(response);
+    } catch (error) {
+      console.log(TAG, "\n", error);
+
+      response.message = "Não foi possível deletar o time!";
+      response.data = null;
+      response.error = error;
+
+      res.status(500);
+      res.json(response);
+    }
+  }
 }
