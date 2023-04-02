@@ -38,6 +38,43 @@ export class Accountsrepo {
     }
   }
 
+  public async updateUser(user: any, id:string) {
+    try {
+      // Verificando se já está cadastrado no banco de dados
+      const usuarioDB = await connectDb(query.getUserById, [id]);
+      if (usuarioDB.length === 0) {
+        throw "Usuário não encontrado";
+      }
+
+      if(usuarioDB[0].squad!==null && user.is_admin == true){
+        throw "Esse usuário faz parte de uma equipe"
+      }
+
+      if(usuarioDB[0].is_admin && user.is_admin == false){
+        throw "Essa coluna não pode ser alterada"
+      }
+      
+      Object.assign(usuarioDB[0],user)
+
+      const response = await connectDb(query.updateUser, [
+        id,
+        usuarioDB[0].username,
+        usuarioDB[0].email,
+        usuarioDB[0].first_name,
+        usuarioDB[0].last_name,
+        usuarioDB[0].password,
+        usuarioDB[0].is_admin,
+      ]);
+
+      const data: IUser = response[0];
+      //     console.log(data, "response from DB")
+      return data;
+    } catch (error) {
+      console.log(TAG, "error caught at updateUser()");
+      throw error;
+    }
+  }
+
   public async deleteUser(id: string) {
     try {
       // Verificando o usuário é lider de uma equipe

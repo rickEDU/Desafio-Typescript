@@ -28,6 +28,11 @@ FROM public.${tableUsers}
 WHERE id = $1
 RETURNING ${allCollumns};
 `;
+const getUserById = `
+SELECT *
+FROM public.${tableUsers} 
+WHERE id = $1;
+`;
 
 const insertUser = `
 INSERT INTO ${tableUsers}(id, username, email, first_name, last_name, password, is_admin )
@@ -39,9 +44,12 @@ const updateUser = `
 UPDATE ${tableUsers}
 SET username = $2,
 email = $3,
-    password = $4
+first_name = $4,
+last_name = $5,
+password = $6,
+is_admin = $7
 WHERE id = $1
-RETURNING *;
+RETURNING ${allCollumns};
 `;
 
 const leaderSquad = `
@@ -53,6 +61,7 @@ WHERE leader=$1
 export const query = {
   getUsers,
   getUser,
+  getUserById,
   deleteUser,
   insertUser,
   updateUser,

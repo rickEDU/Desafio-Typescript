@@ -54,6 +54,48 @@ export class AccountsController {
       res.json(response);
     }
   }
+  public async updateUser(req: Request, res: Response) {
+    // Padronizar a resposta
+
+    const response: ApiResponse<ApiResponseData> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+
+    try {
+      const { decoded }: any = req.body;
+      if (decoded.user.id !== req.params.user_id && !decoded.user.is_admin) {
+        throw "Error: Não é possível alterar o cadastro de outro usuário";
+      }
+      if(!decoded.user.is_admin && req.body.is_admin !== undefined){
+        throw 'Error: Esse usuário não pode alterar a coluna de Administrador'
+      }
+      const user: IUser = req.body;
+
+      // new NameValidator(user.username);
+      // new EmailValidator(user.email);
+      // new PasswordValidator(user.password);
+
+      const serviceResponse = await accountsService.updateUser(user, req.params.user_id);
+
+      response.message = "Usuário criado com sucesso!";
+      response.data = serviceResponse;
+      response.error = null;
+
+      res.status(200).json(response);
+    } catch (error) {
+      console.log(TAG, "\n", error);
+
+      response.message = "Não foi possível criar o usuário!";
+      response.data = null;
+      response.error = error;
+
+      res.status(500);
+      res.json(response);
+    }
+  }
+
   public async deleteUser(req: Request, res: Response) {
     // Padronizar a resposta
     const response: ApiResponse<ApiResponseData> = {
