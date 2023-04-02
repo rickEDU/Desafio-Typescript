@@ -15,7 +15,8 @@ WHERE id= $1;
 const getLeader = `
 SELECT *
 FROM ${teamTable} 
-WHERE leader=$1;
+WHERE leader=$1
+RETURNING *;
 `;
 
 const deleteTeam = `
