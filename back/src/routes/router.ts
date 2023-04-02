@@ -19,6 +19,7 @@ route.delete(
 );
 route.post("/users/", accountsController.createUser);
 route.post("/login", loginController.login);
+route.patch("/users/:user_id", Auth.authenticated, accountsController.updateUser);
 
 route.post("/teams/", Auth.authenticated, teamController.createTeam);
 route.delete(
@@ -27,6 +28,7 @@ route.delete(
   Auth.isAdmin,
   teamController.deleteTeam
 );
+
 
 route.get("/auth", Auth.authenticated);
 // route.post("/accounts/login", accountsController.login);
