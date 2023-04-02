@@ -56,7 +56,7 @@ export class TeamController {
     try {
       const serviceResponse = await teamService.deleteTeam(req.params.team_id);
 
-      response.message = "Usuário deletado com sucesso!";
+      response.message = "Equipe deletada com sucesso!";
       response.data = serviceResponse;
       response.error = null;
 
