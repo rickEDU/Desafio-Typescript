@@ -6,7 +6,7 @@ class Validator {
   }
 }
 
-class StringValidator extends Validator {
+export class StringValidator extends Validator {
   constructor(data: string) {
     if (typeof data !== "string") throw "O tipo deve ser uma string";
     else super(data);

@@ -16,9 +16,7 @@ export class Accountsrepo {
   public async createUser(user: IUser) {
     try {
       // Verificando se já está cadastrado no banco de dados
-      const userVerify = await connectDb(query.getUser, [
-        user.username
-      ]);
+      const userVerify = await connectDb(query.getUser, [user.username]);
       if (userVerify.length !== 0) {
         throw "Usuário já cadastrado";
       }
@@ -48,8 +46,8 @@ export class Accountsrepo {
         throw "Usuário é lider de uma equipe";
       }
       const response = await connectDb(query.deleteUser, [id]);
-      if(response.length === 0){
-        throw 'Usuário não encontrado'
+      if (response.length === 0) {
+        throw "Usuário não encontrado";
       }
       const data: IUser = response[0];
       //     console.log(data, "response from DB")
