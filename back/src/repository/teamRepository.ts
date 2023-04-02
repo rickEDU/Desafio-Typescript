@@ -31,6 +31,15 @@ export class TeamRepo {
       ]);
 
       const data: ITeamResponse = response[0];
+
+      const result = await connectDb(teamQuery.updateUserSquad, [
+        data.id,
+        data.leader,
+      ]);
+
+      console.log("Campo squad atualizado!", result[0]);
+      console.log("Data", data);
+
       //     console.log(data, "response from DB")
       return data;
     } catch (error) {
