@@ -16,9 +16,13 @@ export class TeamRepo {
       if (teamVerifyLeader.length !== 0) {
         throw "Usuário já é lider de uma equipe";
       }
-      const verifyUser = await connectDb(query.getUser, [team.leader]);
+      const verifyUser = await connectDb(teamQuery.getUser, [team.leader]);
       if (verifyUser.length === 0) {
         throw "Usuário não está cadastrado";
+      }
+
+      if (verifyUser[0].is_admin) {
+        throw "Usuário é administrador, portanto não pode ser líder";
       }
 
       const response = await connectDb(teamQuery.insertTeam, [
