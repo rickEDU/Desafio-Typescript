@@ -61,7 +61,7 @@ export class TeamRepo {
         throw "Existe usuários na equipe";
       } else {
         const updateLeader = await connectDb(query.updateUserSquad, [
-          userVerifySquad[0],
+          userVerifySquad[0].id,
           null,
         ]);
       }
