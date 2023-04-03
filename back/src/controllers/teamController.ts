@@ -83,10 +83,6 @@ export class TeamController {
     try {
       // const id_regex: string = req.params.user_id.replace(/ /g, "");
       const { decoded }: any = req.body;
-      // const id_regex: string = req.params.user_id.replace(/ /g, "");
-      if (!decoded.user.is_admin) {
-        throw "Error: não é um Administrador";
-      }
 
       const serviceResponse = await teamService.addMemberTeam(
         decoded.user.id,
@@ -95,7 +91,7 @@ export class TeamController {
         req.params.team_id
       );
 
-      response.message = "Equipe deletada com sucesso!";
+      response.message = "Equipe alterada com sucesso!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -103,7 +99,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível deletar o time!";
+      response.message = "Não foi possível alterar a equipe!";
       response.data = null;
       response.error = error;
 

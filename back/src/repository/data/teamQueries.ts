@@ -18,6 +18,11 @@ FROM ${teamTable}
 WHERE leader=$1;
 `;
 
+const getLeaderTeam = `
+SELECT *
+FROM ${teamTable}
+WHERE id=$1 AND leader=$2`;
+
 const deleteTeam = `
 DELETE
 FROM public.${teamTable} 
@@ -61,6 +66,7 @@ export const teamQuery = {
   getTeams,
   getTeam,
   getLeader,
+  getLeaderTeam,
   deleteTeam,
   insertTeam,
   updateTeam,
