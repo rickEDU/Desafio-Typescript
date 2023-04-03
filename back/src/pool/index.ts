@@ -9,7 +9,7 @@ const pool = new pg.Pool({
   host: process.env.HOSTPG,
   password: process.env.PGPASSW,
   database: process.env.PGDB,
-  max: 10000,
+  max: 20,
   idleTimeoutMillis: 30000,
 });
 

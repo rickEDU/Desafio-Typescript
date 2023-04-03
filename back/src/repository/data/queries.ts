@@ -9,7 +9,7 @@ const tableUsers = "usuario";
 // Column password;
 // Column squad;
 // Column is_admin;
-const allCollumns = `id, username, email, first_name, last_name, is_admin`;
+const allCollumns = `id, username, email, first_name, last_name, squad, is_admin`;
 
 /* Table team */
 const tableTeams = "equipe";

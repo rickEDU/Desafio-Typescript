@@ -83,7 +83,8 @@ export class TeamRepo {
     teamId: string
   ) {
     try {
-      const userVerifyLeader = await connectDb(teamQuery.getLeader, [
+      const userVerifyLeader = await connectDb(teamQuery.getLeaderTeam, [
+        teamId,
         userLogin,
       ]);
       if (userVerifyLeader.length === 0 && userIsAdmin === false) {
@@ -95,12 +96,16 @@ export class TeamRepo {
         throw "Usuário já pertence a uma equipe";
       }
 
+      if (userLogin === userId) {
+        throw "Não tem permissão para alterar a si próprio";
+      }
+
       const response = await connectDb(query.updateUserSquad, [userId, teamId]);
 
       const data: any = response[0];
       return data;
     } catch (error) {
-      console.log(TAG, "error caught at deleteUser()");
+      console.log(TAG, "error caught at addMemberTeamRepository()");
       throw error;
     }
   }
