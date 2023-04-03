@@ -13,21 +13,26 @@ export interface IUserResponse {
   id?: UUID;
   username: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   squad?: UUID;
-  isAdmin: string;
+  is_admin: boolean;
+}
+
+export interface IDecode<T> {
+  user: T;
+  iat: number;
 }
 
 export interface IUser {
   id?: UUID;
   username: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   password: string;
   squad?: UUID;
-  isAdmin: string;
+  is_admin: string;
 }
 
 export interface ILogin {
