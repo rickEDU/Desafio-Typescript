@@ -67,7 +67,69 @@ export class TeamRepo {
       }
 
       const response = await connectDb(teamQuery.deleteTeam, [idSquad]);
-      console.log(response, "teste do delete");
+
+      const data: any = response[0];
+      return data;
+    } catch (error) {
+      console.log(TAG, "error caught at deleteUser()");
+      throw error;
+    }
+  }
+
+  public async addMemberTeam(
+    userLogin: string,
+    userIsAdmin: boolean,
+    userId: string,
+    teamId: string
+  ) {
+    try {
+      const userVerifyLeader = await connectDb(teamQuery.getLeaderTeam, [
+        teamId,
+        userLogin,
+      ]);
+      if (userVerifyLeader.length === 0 && userIsAdmin === false) {
+        throw "Não tem permissão";
+      }
+      const userIsMember = await connectDb(query.getUserById, [userId]);
+
+      if (userIsMember[0].squad !== null) {
+        throw "Usuário já pertence a uma equipe";
+      }
+
+      if (userLogin === userId) {
+        throw "Não tem permissão para alterar a si próprio";
+      }
+
+      const response = await connectDb(query.updateUserSquad, [userId, teamId]);
+
+      const data: any = response[0];
+      return data;
+    } catch (error) {
+      console.log(TAG, "error caught at addMemberTeamRepository()");
+      throw error;
+    }
+  }
+  public async removeMemberTeam(
+    userLogin: string,
+    userIsAdmin: boolean,
+    userId: string,
+    teamId: string
+  ) {
+    try {
+      const userVerifyLeader = await connectDb(teamQuery.getLeaderTeam, [
+        teamId,
+        userLogin,
+      ]);
+
+      if (userVerifyLeader.length === 0 && userIsAdmin === false) {
+        throw "Não tem permissão";
+      }
+
+      if (userLogin === userId) {
+        throw "Não tem permissão para alterar a si próprio";
+      }
+
+      const response = await connectDb(query.updateUserSquad, [userId, null]);
 
       const data: any = response[0];
       return data;

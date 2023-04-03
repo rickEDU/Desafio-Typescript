@@ -18,6 +18,12 @@ FROM ${teamTable}
 WHERE leader=$1;
 `;
 
+const getLeaderTeam = `
+SELECT * 
+FROM ${teamTable} 
+WHERE id=$1
+AND leader=$2`;
+
 const deleteTeam = `
 DELETE
 FROM public.${teamTable} 
@@ -47,15 +53,22 @@ RETURNING *;
 const updateUserSquad = `
 UPDATE usuario
 SET squad = $1
-
 WHERE id = $2
 RETURNING *;
 `;
+
+const teamTeste = `
+SELECT *
+FROM usuario
+INNER JOIN equipe
+ON usuario.squad = equipe.id;`;
+
 // Objeto com todas as constantes.
 export const teamQuery = {
   getTeams,
   getTeam,
   getLeader,
+  getLeaderTeam,
   deleteTeam,
   insertTeam,
   updateTeam,
