@@ -30,6 +30,7 @@ route.patch(
 route.delete(
   "/users/:user_id",
   Auth.authenticated,
+  Auth.isAdmin,
   accountsController.deleteUser
 );
 route.delete(

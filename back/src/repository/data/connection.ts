@@ -2,7 +2,7 @@ import pool from "../../pool/index.js";
 
 export async function connectDb(
   query: string,
-  arrayColumns: Array<string | number | null>
+  arrayColumns: Array<string | number | null | boolean>
 ) {
   const client = await pool.connect();
 

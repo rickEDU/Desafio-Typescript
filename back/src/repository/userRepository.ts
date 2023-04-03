@@ -4,7 +4,10 @@ import {
   IUser,
   IUserDataComplete,
   ApiResponseData,
+  IUserResponse,
+  IUserRequest,
 } from "../interfaces/userInterfaces";
+import { ITeamResponse } from "../interfaces/teamInterfaces";
 import { connectDb } from "./data/connection.js";
 import { query } from "./data/queries.js";
 
@@ -12,19 +15,21 @@ const TAG = "userRepository";
 
 export class Accountsrepo {
   public async createUser(user: IUser) {
+    
     try {
       // Verificando se já está cadastrado no banco de dados
-      const userVerify = await connectDb(query.getUser, [user.username]);
+      const userVerify:Array<IUser> = await connectDb(query.getUser, [user.username]);
       if (userVerify.length !== 0) {
         throw "Usuário já cadastrado";
       }
+
       const response = await connectDb(query.insertUser, [
         user.username,
         user.email,
-        user.firstName,
-        user.lastName,
+        user.first_name,
+        user.last_name,
         user.password,
-        user.isAdmin,
+        user.is_admin,
       ]);
 
       const data: IUser = response[0];
@@ -36,16 +41,16 @@ export class Accountsrepo {
     }
   }
 
-  public async updateUser(user: any, id:string) {
+  public async updateUser(user: IUserRequest, id:string) {
     try {
       // Verificando se já está cadastrado no banco de dados
-      const usuarioDB = await connectDb(query.getUserById, [id]);
+      const usuarioDB:Array<IUser> = await connectDb(query.getUserById, [id]);
       if (usuarioDB.length === 0) {
         throw "Usuário não encontrado";
       }
 
       if(usuarioDB[0].squad!==null && user.is_admin == true){
-        throw "Esse usuário faz parte de uma equipe"
+        throw "Esse usuário faz parte de uma equipe, logo não pode se tornar administrador"
       }
 
       if(usuarioDB[0].is_admin && user.is_admin == false){
@@ -54,18 +59,18 @@ export class Accountsrepo {
       
       Object.assign(usuarioDB[0],user)
 
-      const response = await connectDb(query.updateUser, [
+      const response:Array<IUserResponse> = await connectDb(query.updateUser, [
         id,
         usuarioDB[0].username,
         usuarioDB[0].email,
         usuarioDB[0].first_name,
         usuarioDB[0].last_name,
         usuarioDB[0].password,
+        // se poder trocar o time(squad) adicionar o campo aqui;
         usuarioDB[0].is_admin,
       ]);
 
-      const data: IUser = response[0];
-      //     console.log(data, "response from DB")
+      const data:IUserResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at updateUser()");
@@ -76,16 +81,15 @@ export class Accountsrepo {
   public async deleteUser(id: string) {
     try {
       // Verificando o usuário é lider de uma equipe
-      const userVerifyLeader = await connectDb(query.leaderSquad, [id]);
+      const userVerifyLeader:Array<ITeamResponse> = await connectDb(query.leaderSquad, [id]);
       if (userVerifyLeader.length !== 0) {
         throw "Usuário é lider de uma equipe";
       }
-      const response = await connectDb(query.deleteUser, [id]);
+      const response:Array<IUserResponse> = await connectDb(query.deleteUser, [id]);
       if (response.length === 0) {
         throw "Usuário não encontrado";
       }
-      const data: IUser = response[0];
-      //     console.log(data, "response from DB")
+      const data: IUserResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at deleteUser()");
@@ -96,13 +100,11 @@ export class Accountsrepo {
   public async SelectUser(username: string) {
     try {
       // Verificando se já está cadastrado no banco de dados
-      const user = await connectDb(query.getUser, [username]);
+      const user:Array<IUser> = await connectDb(query.getUser, [username]);
       if (user.length === 0) {
         throw "Usuário não está cadastrado";
       }
 
-      //CONSERTAR DEPPOIS o tipo do data:
-      //   const data: any = user[0];
       return user[0];
     } catch (error) {
       console.log(TAG, "error caught at createUser()");
