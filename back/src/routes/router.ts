@@ -12,15 +12,20 @@ const loginController = new LoginController();
 const teamController = new TeamController();
 const Auth = new auth();
 
+route.post("/users/", accountsController.createUser);
+route.post("/login", loginController.login);
+route.post("/teams/", Auth.authenticated, teamController.createTeam);
+route.post(
+  "/teams/:team_id/member/:user_id",
+  Auth.authenticated,
+  teamController.addMemberTeam
+);
+
 route.delete(
   "/users/:user_id",
   Auth.authenticated,
   accountsController.deleteUser
 );
-route.post("/users/", accountsController.createUser);
-route.post("/login", loginController.login);
-
-route.post("/teams/", Auth.authenticated, teamController.createTeam);
 route.delete(
   "/teams/:team_id",
   Auth.authenticated,

@@ -47,10 +47,15 @@ RETURNING *;
 const updateUserSquad = `
 UPDATE usuario
 SET squad = $1
-
 WHERE id = $2
 RETURNING *;
 `;
+
+const teamTeste = `
+SELECT *
+FROM usuario
+INNER JOIN equipe
+ON usuario.squad = equipe.id;`;
 // Objeto com todas as constantes.
 export const teamQuery = {
   getTeams,

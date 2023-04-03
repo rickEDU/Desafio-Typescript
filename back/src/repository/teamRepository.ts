@@ -76,4 +76,51 @@ export class TeamRepo {
       throw error;
     }
   }
+
+  public async addMemberTeam(
+    userLogin: string,
+    userIsAdmin: boolean,
+    userId: string,
+    teamId: string
+  ) {
+    try {
+      // Fazer verificação caso não tenha equipes
+      // Verificando o usuário é lider de uma equipe
+      const userVerifyLeader = await connectDb(teamQuery.getLeader, [
+        userLogin,
+      ]);
+      if (userVerifyLeader.length === 0 || !userIsAdmin) {
+        throw "Não tem permissão";
+      }
+
+      // const userVerifySquad = await connectDb(teamQuery.getTeam, [teamId]);
+      // if (userVerifySquad.length === 0) {
+      //   throw "Não é um líder";
+      // }
+
+      // if (userVerifySquad.length > 1) {
+      //   throw "Não é um líder";
+      // } else {
+
+      // }
+
+      if (userVerifySquad.length > 1) {
+        throw "Existe usuários na equipe";
+      } else {
+        const updateLeader = await connectDb(query.updateUserSquad, [
+          userVerifySquad[0].id,
+          null,
+        ]);
+      }
+
+      const response = await connectDb(teamQuery.deleteTeam, [teamId]);
+      console.log(response, "teste do delete");
+
+      const data: any = response[0];
+      return data;
+    } catch (error) {
+      console.log(TAG, "error caught at deleteUser()");
+      throw error;
+    }
+  }
 }
