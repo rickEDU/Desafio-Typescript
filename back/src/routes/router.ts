@@ -39,11 +39,11 @@ route.delete(
   Auth.isAdmin,
   teamController.deleteTeam
 );
-
 route.delete(
   "/teams/:team_id/member/:user_id",
   Auth.authenticated,
   teamController.removeMemberTeam
 );
+route.delete("/logout", loginController.logout);
 
 export { route };

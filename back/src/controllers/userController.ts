@@ -71,9 +71,14 @@ export class AccountsController {
       if (decoded.user.id !== req.params.user_id && !decoded.user.is_admin) {
         throw "Error: Não é possível alterar o cadastro de outro usuário";
       }
+<<<<<<< Updated upstream
       //Verifica se é um usuário comum tentando se transforma em adm.
       if(!decoded.user.is_admin && user.is_admin == true){
         throw 'Error: Esse usuário não pode alterar a coluna de Administrador'
+=======
+      if (!decoded.user.is_admin && req.body.is_admin !== undefined) {
+        throw "Error: Esse usuário não pode alterar a coluna de Administrador";
+>>>>>>> Stashed changes
       }
 
       //Nessa rota não é possível alterar o squad de um cadastro.
@@ -94,7 +99,10 @@ export class AccountsController {
       }
       
 
-      const serviceResponse:IUserResponse = await accountsService.updateUser(user, req.params.user_id);
+      const serviceResponse: IUserResponse = await accountsService.updateUser(
+        user,
+        req.params.user_id
+      );
 
       response.message = "Usuário atualizado com sucesso!";
       response.data = serviceResponse;
@@ -145,7 +153,6 @@ export class AccountsController {
 
 export class LoginController {
   public async login(req: Request, res: Response) {
-
     const response: ApiResponse<IUserResponse> = {
       message: "",
       data: null,
@@ -157,7 +164,10 @@ export class LoginController {
       new NameValidator(username);
       new PasswordValidator(password);
 
-      const responseLogin: IUserResponse = await loginService.LoginUser(username, password);
+      const responseLogin: IUserResponse = await loginService.LoginUser(
+        username,
+        password
+      );
       const secretKey: string | undefined = process.env.JWTSECRET;
       if (!secretKey) {
         throw "Error: SecretKey is not a string.";
@@ -167,6 +177,27 @@ export class LoginController {
       res.cookie("session", jwt_cookie);
       response.message = "Sucess";
       response.data = responseLogin;
+      return res.status(200).json(response);
+    } catch (error: any) {
+      console.log(TAG, error);
+      response.message = "Error";
+      response.error = error;
+
+      return res.status(400).json(response);
+    }
+  }
+
+  public async logout(req: Request, res: Response) {
+    const response: ApiResponse<IUserResponse> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+
+    try {
+      res.clearCookie("session");
+
+      response.message = "Usuário deslogado";
       return res.status(200).json(response);
     } catch (error: any) {
       console.log(TAG, error);

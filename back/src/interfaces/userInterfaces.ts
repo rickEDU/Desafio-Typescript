@@ -25,7 +25,7 @@ export interface IUserRequest {
   first_name?: string;
   last_name?: string;
   squad?: UUID;
-  password?:string;
+  password?: string;
   is_admin?: boolean;
 }
 export interface IDecode<T> {

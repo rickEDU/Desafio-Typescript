@@ -105,7 +105,7 @@ export class TeamController {
         req.params.team_id
       );
 
-      response.message = "Equipe alterada com sucesso!";
+      response.message = "Usuário adicionado à equipe com sucesso!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -113,7 +113,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível alterar a equipe!";
+      response.message = "Não foi possível adicionar o usuário à equipe!";
       response.data = null;
       response.error = error;
 
