@@ -31,6 +31,28 @@ export class AccountsService {
     }
   }
 
+  public async updateUser(user: any, id:string) {
+    try {
+      const data: any = {};
+      
+      for(let key in user){
+        if(key === 'decoded' || key === 'id'){
+          continue
+        }
+        data[key] = user[key]
+      }
+      if(user.password !== undefined){
+        const hashedPassword = bcrypt.hashSync(user.password, 10);
+        data.password = hashedPassword
+      }
+      const dbResponse = await accountsRepo.updateUser(data, id);
+      return dbResponse;
+    } catch (error) {
+      console.log(TAG, "error caught at");
+      throw error;
+    }
+  }
+  
   public async deleteUser(id: string) {
     try {
       //consertar os tipos da resposta dbResponse
@@ -42,6 +64,7 @@ export class AccountsService {
     }
   }
 }
+
 
 export class LoginService {
   public async LoginUser(username: string, password: string) {
