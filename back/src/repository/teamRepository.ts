@@ -98,7 +98,6 @@ export class TeamRepo {
       }
 
       const response = await connectDb(query.updateUserSquad, [userId, teamId]);
-
       const data: IUserResponse = response[0];
       return data;
     } catch (error) {

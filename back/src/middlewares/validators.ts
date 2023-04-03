@@ -8,7 +8,7 @@ class Validator {
 
 export class StringValidator extends Validator {
   constructor(data: string) {
-    if (typeof data !== "string") throw "O tipo deve ser uma string";
+    if (typeof data !== "string") throw "O input deve ser uma string";
     else super(data);
   }
 }
@@ -16,9 +16,9 @@ export class StringValidator extends Validator {
 abstract class RegexValidator extends StringValidator {
   protected _regex: RegExp = new RegExp("");
 
-  constructor(data: string) {
+  constructor(data: string, message:string) {
     super(data);
-    if (!this.regex.test(data)) throw "O tipo está errado";
+    if (!this.regex.test(data)) throw message;
   }
 
   // Propriedade getter "regex"
@@ -29,7 +29,7 @@ abstract class RegexValidator extends StringValidator {
 
 export class EmailValidator extends RegexValidator {
   constructor(data: string) {
-    super(data);
+    super(data, 'Error: email inválido.');
   }
 
   protected get regex(): RegExp {
@@ -39,7 +39,7 @@ export class EmailValidator extends RegexValidator {
 
 export class PasswordValidator extends RegexValidator {
   constructor(data: string) {
-    super(data);
+    super(data,'Error: Password inválido.');
   }
 
   protected get regex(): RegExp {
@@ -48,7 +48,7 @@ export class PasswordValidator extends RegexValidator {
 }
 export class NameValidator extends RegexValidator {
   constructor(data: string) {
-    super(data);
+    super(data, 'Error: Nome inválido.');
   }
 
   protected get regex(): RegExp {
