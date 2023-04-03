@@ -2,6 +2,8 @@ import { ITeam, ITeamResponse } from "../interfaces/teamInterfaces.js";
 import { connectDb } from "./data/connection.js";
 import { teamQuery } from "./data/teamQueries.js";
 import { query } from "./data/queries.js";
+import { IUserResponse } from "../interfaces/userInterfaces.js";
+import { UUID } from "crypto";
 
 const TAG = "teamRepository";
 
@@ -49,8 +51,6 @@ export class TeamRepo {
 
   public async deleteTeam(idSquad: string) {
     try {
-      // Fazer verificação caso não tenha equipes
-      // Verificando o usuário é lider de uma equipe
       const userVerifySquad = await connectDb(query.selectUserSquad, [idSquad]);
 
       if (userVerifySquad.length === 0) {
@@ -60,15 +60,12 @@ export class TeamRepo {
       if (userVerifySquad.length > 1) {
         throw "Existe usuários na equipe";
       } else {
-        const updateLeader = await connectDb(query.updateUserSquad, [
-          userVerifySquad[0].id,
-          null,
-        ]);
+        await connectDb(query.updateUserSquad, [userVerifySquad[0].id, null]);
       }
 
       const response = await connectDb(teamQuery.deleteTeam, [idSquad]);
 
-      const data: any = response[0];
+      const data: ITeamResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at deleteUser()");
@@ -102,7 +99,7 @@ export class TeamRepo {
 
       const response = await connectDb(query.updateUserSquad, [userId, teamId]);
 
-      const data: any = response[0];
+      const data: IUserResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at addMemberTeamRepository()");

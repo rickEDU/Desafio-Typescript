@@ -58,7 +58,7 @@ export class AccountsController {
   public async updateUser(req: Request, res: Response) {
     // Padronizar a resposta
 
-    const response: ApiResponse<ApiResponseData> = {
+    const response: ApiResponse<IUserResponse> = {
       message: "",
       data: null,
       error: null,
@@ -79,7 +79,7 @@ export class AccountsController {
       // new EmailValidator(user.email);
       // new PasswordValidator(user.password);
 
-      const serviceResponse = await accountsService.updateUser(user, req.params.user_id);
+      const serviceResponse:IUserResponse = await accountsService.updateUser(user, req.params.user_id);
 
       response.message = "Usuário criado com sucesso!";
       response.data = serviceResponse;

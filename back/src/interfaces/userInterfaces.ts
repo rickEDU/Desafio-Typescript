@@ -28,6 +28,10 @@ export interface IUserRequest {
   password?:string;
   is_admin?: boolean;
 }
+export interface IDecode<T> {
+  user: T;
+  iat: number;
+}
 
 export interface IUser {
   id?: UUID;
