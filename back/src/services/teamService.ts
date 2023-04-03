@@ -46,4 +46,24 @@ export class TeamService {
       throw error;
     }
   }
+  public async removeMemberTeam(
+    userLogin: string,
+    userIsAdmin: boolean,
+    userId: string,
+    teamId: string
+  ) {
+    try {
+      //consertar os tipos da resposta dbResponse
+      const dbResponse = await teamRepo.removeMemberTeam(
+        userLogin,
+        userIsAdmin,
+        userId,
+        teamId
+      );
+      return dbResponse;
+    } catch (error) {
+      console.log(TAG, "error caught at");
+      throw error;
+    }
+  }
 }

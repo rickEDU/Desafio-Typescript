@@ -39,4 +39,10 @@ route.delete(
   teamController.deleteTeam
 );
 
+route.delete(
+  "/teams/:team_id/member/:user_id",
+  Auth.authenticated,
+  teamController.removeMemberTeam
+);
+
 export { route };
