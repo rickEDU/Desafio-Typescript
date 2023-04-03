@@ -1,5 +1,5 @@
 import { Accountsrepo } from "../repository/userRepository.js";
-import { IUser } from "../interfaces/userInterfaces.js";
+import { IUser, IUserResponse } from "../interfaces/userInterfaces.js";
 import bcrypt from "bcrypt";
 
 const accountsRepo = new Accountsrepo();
@@ -17,13 +17,13 @@ export class AccountsService {
       const data: IUser = {
         username: user.username,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        first_name: user.first_name,
+        last_name: user.last_name,
         password: hashedPassword,
-        isAdmin: "false",
+        is_admin: false,
       };
 
-      const dbResponse = await accountsRepo.createUser(data);
+      const dbResponse:IUser = await accountsRepo.createUser(data);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");
@@ -45,7 +45,7 @@ export class AccountsService {
         const hashedPassword = bcrypt.hashSync(user.password, 10);
         data.password = hashedPassword
       }
-      const dbResponse = await accountsRepo.updateUser(data, id);
+      const dbResponse:IUserResponse = await accountsRepo.updateUser(data, id);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");
@@ -56,7 +56,7 @@ export class AccountsService {
   public async deleteUser(id: string) {
     try {
       //consertar os tipos da resposta dbResponse
-      const dbResponse = await accountsRepo.deleteUser(id);
+      const dbResponse:IUserResponse = await accountsRepo.deleteUser(id);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");
@@ -71,14 +71,14 @@ export class LoginService {
     try {
       //CONSERTAR DEPOIS: TEM QUE FAZER O HASH DA SENHA AQUI
       // const hashedPassword = bcrypt.hashSync(password, 10);
-      const dbResponse = await accountsRepo.SelectUser(username);
+      const dbResponse:IUser = await accountsRepo.SelectUser(username);
 
       //// Verifica se a senha está correta
-      const isPasswordValid = bcrypt.compareSync(password, dbResponse.password);
+      const isPasswordValid:boolean = bcrypt.compareSync(password, dbResponse.password);
       if (!isPasswordValid) {
         throw "Senha inválida";
       }
-      const data = {
+      const data:IUserResponse = {
         id: dbResponse.id,
         username: dbResponse.username,
         email: dbResponse.email,
