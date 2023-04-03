@@ -11,6 +11,7 @@ import {
   ApiResponse,
   ILoginData,
   ILogin,
+  IUserResponse,
 } from "../interfaces/userInterfaces.js";
 import jwt from "jsonwebtoken";
 
@@ -57,7 +58,7 @@ export class AccountsController {
   public async updateUser(req: Request, res: Response) {
     // Padronizar a resposta
 
-    const response: ApiResponse<ApiResponseData> = {
+    const response: ApiResponse<IUserResponse> = {
       message: "",
       data: null,
       error: null,
@@ -78,7 +79,7 @@ export class AccountsController {
       // new EmailValidator(user.email);
       // new PasswordValidator(user.password);
 
-      const serviceResponse = await accountsService.updateUser(user, req.params.user_id);
+      const serviceResponse:IUserResponse = await accountsService.updateUser(user, req.params.user_id);
 
       response.message = "Usuário criado com sucesso!";
       response.data = serviceResponse;
@@ -99,19 +100,15 @@ export class AccountsController {
 
   public async deleteUser(req: Request, res: Response) {
     // Padronizar a resposta
-    const response: ApiResponse<ApiResponseData> = {
+    const response: ApiResponse<IUserResponse> = {
       message: "",
       data: null,
       error: null,
     };
 
     try {
-      const { decoded }: any = req.body;
       const id_regex: string = req.params.user_id.replace(/ /g, "");
-      if (!decoded.user.is_admin) {
-        throw "Error: não é um Administrador";
-      }
-      const serviceResponse = await accountsService.deleteUser(id_regex);
+      const serviceResponse:IUserResponse = await accountsService.deleteUser(id_regex);
 
       response.message = "Usuário deletado com sucesso!";
       response.data = serviceResponse;
@@ -133,32 +130,25 @@ export class AccountsController {
 
 export class LoginController {
   public async login(req: Request, res: Response) {
-    type ApiResponseData = IUser | IUser | ILoginData | null;
 
-    const response: ApiResponse<ApiResponseData> = {
+    const response: ApiResponse<IUserResponse> = {
       message: "",
       data: null,
       error: null,
     };
 
-    interface IDataLogin {
-      id: string | number;
-      email: string;
-      password: string;
-    }
     try {
       const { username, password } = req.body;
       // new EmailValidator(email)
       new PasswordValidator(password);
 
-      const responseLogin = await loginService.LoginUser(username, password);
+      const responseLogin: IUserResponse = await loginService.LoginUser(username, password);
       const secretKey: string | undefined = process.env.JWTSECRET;
-
       if (!secretKey) {
         throw "Error: SecretKey is not a string.";
       }
 
-      const jwt_cookie = jwt.sign({ user: responseLogin }, secretKey);
+      const jwt_cookie: string = jwt.sign({ user: responseLogin }, secretKey);
       res.cookie("session", jwt_cookie);
       response.message = "Sucess";
       response.data = responseLogin;

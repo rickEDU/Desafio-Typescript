@@ -1,8 +1,13 @@
 import { TeamService } from "../services/teamService.js";
 import { Response, Request } from "express";
 import { NameValidator, StringValidator } from "../middlewares/validators.js";
-import { ITeam } from "../interfaces/teamInterfaces.js";
-import { ApiResponse, ApiResponseData } from "../interfaces/userInterfaces.js";
+import { ITeam, ITeamResponse } from "../interfaces/teamInterfaces.js";
+import {
+  ApiResponse,
+  ApiResponseData,
+  IDecode,
+  IUserResponse,
+} from "../interfaces/userInterfaces.js";
 
 const TAG = "team controller";
 
@@ -46,8 +51,7 @@ export class TeamController {
   }
 
   public async deleteTeam(req: Request, res: Response) {
-    // Padronizar a resposta
-    const response: ApiResponse<ApiResponseData> = {
+    const response: ApiResponse<ITeamResponse> = {
       message: "",
       data: null,
       error: null,
@@ -74,15 +78,22 @@ export class TeamController {
   }
 
   public async addMemberTeam(req: Request, res: Response) {
-    const response: ApiResponse<ApiResponseData> = {
+    const response: ApiResponse<IUserResponse> = {
       message: "",
       data: null,
       error: null,
     };
 
     try {
-      // const id_regex: string = req.params.user_id.replace(/ /g, "");
-      const { decoded }: any = req.body;
+      const body = req.body;
+      const decoded: IDecode<IUserResponse> = body.decoded;
+
+      if (
+        decoded.user.id === undefined ||
+        decoded.user.is_admin === undefined
+      ) {
+        throw "Usuário não logado";
+      }
 
       const serviceResponse = await teamService.addMemberTeam(
         decoded.user.id,

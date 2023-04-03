@@ -2,6 +2,10 @@ import { ITeam, ITeamResponse } from "../interfaces/teamInterfaces.js";
 import { connectDb } from "./data/connection.js";
 import { teamQuery } from "./data/teamQueries.js";
 import { query } from "./data/queries.js";
+import { IUserResponse } from "../interfaces/userInterfaces.js";
+import { UUID } from "crypto";
+import { ILoginData } from "../interfaces/userInterfaces.js";
+import { IUser } from "../interfaces/userInterfaces.js";
 
 const TAG = "teamRepository";
 
@@ -49,10 +53,10 @@ export class TeamRepo {
 
   public async deleteTeam(idSquad: string) {
     try {
-      // Fazer verificação caso não tenha equipes
-      // Verificando o usuário é lider de uma equipe
-      const userVerifySquad = await connectDb(query.selectUserSquad, [idSquad]);
-
+      const userVerifySquad: Array<ILoginData> = await connectDb(
+        query.selectUserSquad,
+        [idSquad]
+      );
       if (userVerifySquad.length === 0) {
         throw "Equipe não cadastrada";
       }
@@ -60,15 +64,14 @@ export class TeamRepo {
       if (userVerifySquad.length > 1) {
         throw "Existe usuários na equipe";
       } else {
-        const updateLeader = await connectDb(query.updateUserSquad, [
-          userVerifySquad[0].id,
-          null,
-        ]);
+        await connectDb(query.updateUserSquad, [userVerifySquad[0].id, null]);
       }
 
-      const response = await connectDb(teamQuery.deleteTeam, [idSquad]);
-
-      const data: any = response[0];
+      const response: Array<ITeamResponse> = await connectDb(
+        teamQuery.deleteTeam,
+        [idSquad]
+      );
+      const data: ITeamResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at deleteUser()");
@@ -83,15 +86,18 @@ export class TeamRepo {
     teamId: string
   ) {
     try {
-      const userVerifyLeader = await connectDb(teamQuery.getLeaderTeam, [
-        teamId,
-        userLogin,
-      ]);
+      const userVerifyLeader: Array<ITeamResponse> = await connectDb(
+        teamQuery.getLeaderTeam,
+        [teamId, userLogin]
+      );
       if (userVerifyLeader.length === 0 && userIsAdmin === false) {
         throw "Não tem permissão";
       }
-      const userIsMember = await connectDb(query.getUserById, [userId]);
 
+      // Tem que consertar a query para não retornar o password
+      const userIsMember: Array<IUser> = await connectDb(query.getUserById, [
+        userId,
+      ]);
       if (userIsMember[0].squad !== null) {
         throw "Usuário já pertence a uma equipe";
       }
@@ -100,9 +106,12 @@ export class TeamRepo {
         throw "Não tem permissão para alterar a si próprio";
       }
 
-      const response = await connectDb(query.updateUserSquad, [userId, teamId]);
+      const response: Array<IUserResponse> = await connectDb(
+        query.updateUserSquad,
+        [userId, teamId]
+      );
 
-      const data: any = response[0];
+      const data: IUserResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at addMemberTeamRepository()");
