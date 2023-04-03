@@ -73,7 +73,7 @@ const updateUserSquad = `
 UPDATE ${tableUsers}
 SET squad = $2
 WHERE id = $1
-RETURNING *;
+RETURNING ${allCollumns};
 `;
 
 // Objeto com todas as constantes.
