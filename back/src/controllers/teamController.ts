@@ -23,7 +23,9 @@ export class TeamController {
     };
 
     try {
-      const { decoded }: any = req.body;
+      const body = req.body;
+      const decoded: IDecode<IUserResponse> = body.decoded;
+
       if (!decoded.user.is_admin) {
         throw "Error: não é um Administrador";
       }
@@ -127,10 +129,15 @@ export class TeamController {
     };
 
     try {
-      // const id_regex: string = req.params.user_id.replace(/ /g, "");
-      const { decoded }: any = req.body;
+      const body = req.body;
+      const decoded: IDecode<IUserResponse> = body.decoded;
 
-      console.log(req.body, "req.body");
+      if (
+        decoded.user.id === undefined ||
+        decoded.user.is_admin === undefined
+      ) {
+        throw "Usuário não logado";
+      }
 
       const serviceResponse = await teamService.removeMemberTeam(
         decoded.user.id,
