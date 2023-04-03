@@ -3,6 +3,7 @@ import { connectDb } from "./data/connection.js";
 import { teamQuery } from "./data/teamQueries.js";
 import { query } from "./data/queries.js";
 import { IUserResponse } from "../interfaces/userInterfaces.js";
+
 import { UUID } from "crypto";
 import { ILoginData } from "../interfaces/userInterfaces.js";
 import { IUser } from "../interfaces/userInterfaces.js";
@@ -13,13 +14,18 @@ export class TeamRepo {
   public async createTeam(team: ITeam) {
     try {
       // Verificando se já está cadastrado no banco de dados
-      const teamVerifyLeader = await connectDb(teamQuery.getLeader, [
-        team.leader,
-      ]);
+      const teamVerifyLeader: Array<IUserResponse> = await connectDb(
+        teamQuery.getLeader,
+        [team.leader]
+      );
+
       if (teamVerifyLeader.length !== 0) {
         throw "Usuário já é lider de uma equipe";
       }
-      const verifyUser = await connectDb(teamQuery.getUser, [team.leader]);
+      const verifyUser: Array<IUserResponse> = await connectDb(
+        teamQuery.getUser,
+        [team.leader]
+      );
       if (verifyUser.length === 0) {
         throw "Usuário não está cadastrado";
       }
@@ -35,15 +41,11 @@ export class TeamRepo {
 
       const data: ITeamResponse = response[0];
 
-      const result = await connectDb(teamQuery.updateUserSquad, [
-        data.id,
-        data.leader,
-      ]);
+      const result: Array<IUserResponse> = await connectDb(
+        teamQuery.updateUserSquad,
+        [data.id, data.leader]
+      );
 
-      console.log("Campo squad atualizado!", result[0]);
-      console.log("Data", data);
-
-      //     console.log(data, "response from DB")
       return data;
     } catch (error) {
       console.log(TAG, "error caught at createTeam()");
@@ -125,10 +127,10 @@ export class TeamRepo {
     teamId: string
   ) {
     try {
-      const userVerifyLeader = await connectDb(teamQuery.getLeaderTeam, [
-        teamId,
-        userLogin,
-      ]);
+      const userVerifyLeader: Array<ITeamResponse> = await connectDb(
+        teamQuery.getLeaderTeam,
+        [teamId, userLogin]
+      );
 
       if (userVerifyLeader.length === 0 && userIsAdmin === false) {
         throw "Não tem permissão";
@@ -138,9 +140,12 @@ export class TeamRepo {
         throw "Não tem permissão para alterar a si próprio";
       }
 
-      const response = await connectDb(query.updateUserSquad, [userId, null]);
+      const response: Array<IUserResponse> = await connectDb(
+        query.updateUserSquad,
+        [userId, null]
+      );
 
-      const data: any = response[0];
+      const data: IUserResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at deleteUser()");

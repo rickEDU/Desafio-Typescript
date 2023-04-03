@@ -123,7 +123,7 @@ export class AccountsController {
 
     try {
       const id_regex: string = req.params.user_id.replace(/ /g, "");
-      const serviceResponse:IUserResponse = await accountsService.deleteUser(id_regex);
+      const serviceResponse = await accountsService.deleteUser(id_regex);
 
       response.message = "Usuário deletado com sucesso!";
       response.data = serviceResponse;
@@ -154,7 +154,7 @@ export class LoginController {
 
     try {
       const { username, password } = req.body;
-      // new EmailValidator(email)
+      new NameValidator(username);
       new PasswordValidator(password);
 
       const responseLogin: IUserResponse = await loginService.LoginUser(username, password);
