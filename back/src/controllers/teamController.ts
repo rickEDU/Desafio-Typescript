@@ -1,6 +1,7 @@
 import { TeamService } from "../services/teamService.js";
 import { Response, Request } from "express";
 import { NameValidator, StringValidator } from "../middlewares/validators.js";
+
 import { ITeam, ITeamResponse } from "../interfaces/teamInterfaces.js";
 import {
   ApiResponse,
@@ -119,7 +120,7 @@ export class TeamController {
     }
   }
   public async removeMemberTeam(req: Request, res: Response) {
-    const response: ApiResponse<ApiResponseData> = {
+    const response: ApiResponse<IUserResponse> = {
       message: "",
       data: null,
       error: null,
@@ -128,6 +129,8 @@ export class TeamController {
     try {
       // const id_regex: string = req.params.user_id.replace(/ /g, "");
       const { decoded }: any = req.body;
+
+      console.log(req.body, "req.body");
 
       const serviceResponse = await teamService.removeMemberTeam(
         decoded.user.id,

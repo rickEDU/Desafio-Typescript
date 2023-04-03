@@ -3,6 +3,7 @@ import { connectDb } from "./data/connection.js";
 import { teamQuery } from "./data/teamQueries.js";
 import { query } from "./data/queries.js";
 import { IUserResponse } from "../interfaces/userInterfaces.js";
+
 import { UUID } from "crypto";
 import { ILoginData } from "../interfaces/userInterfaces.js";
 import { IUser } from "../interfaces/userInterfaces.js";
@@ -140,7 +141,7 @@ export class TeamRepo {
 
       const response = await connectDb(query.updateUserSquad, [userId, null]);
 
-      const data: any = response[0];
+      const data: IUserResponse = response[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at deleteUser()");
