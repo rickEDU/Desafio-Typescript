@@ -19,8 +19,6 @@ export class TeamRepo {
         [team.leader]
       );
 
-      console.log(teamVerifyLeader, "teamVerifyLeader");
-
       if (teamVerifyLeader.length !== 0) {
         throw "Usuário já é lider de uma equipe";
       }
@@ -32,8 +30,6 @@ export class TeamRepo {
         throw "Usuário não está cadastrado";
       }
 
-      console.log(verifyUser, "verifyUser");
-
       if (verifyUser[0].is_admin) {
         throw "Usuário é administrador, portanto não pode ser líder";
       }
@@ -43,18 +39,13 @@ export class TeamRepo {
         team.leader,
       ]);
 
-      console.log(response, "responseCreate");
       const data: ITeamResponse = response[0];
-      console.log(data, "dataa");
 
       const result: Array<IUserResponse> = await connectDb(
         teamQuery.updateUserSquad,
         [data.id, data.leader]
       );
 
-      console.log(result, "result");
-
-      //     console.log(data, "response from DB")
       return data;
     } catch (error) {
       console.log(TAG, "error caught at createTeam()");

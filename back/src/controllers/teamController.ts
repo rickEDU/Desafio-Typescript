@@ -23,7 +23,9 @@ export class TeamController {
     };
 
     try {
-      const { decoded }: any = req.body;
+      const body = req.body;
+      const decoded: IDecode<IUserResponse> = body.decoded;
+
       if (!decoded.user.is_admin) {
         throw "Error: não é um Administrador";
       }
