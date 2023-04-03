@@ -14,16 +14,25 @@ export class TeamRepo {
   public async createTeam(team: ITeam) {
     try {
       // Verificando se já está cadastrado no banco de dados
-      const teamVerifyLeader = await connectDb(teamQuery.getLeader, [
-        team.leader,
-      ]);
+      const teamVerifyLeader: Array<IUserResponse> = await connectDb(
+        teamQuery.getLeader,
+        [team.leader]
+      );
+
+      console.log(teamVerifyLeader, "teamVerifyLeader");
+
       if (teamVerifyLeader.length !== 0) {
         throw "Usuário já é lider de uma equipe";
       }
-      const verifyUser = await connectDb(teamQuery.getUser, [team.leader]);
+      const verifyUser: Array<IUserResponse> = await connectDb(
+        teamQuery.getUser,
+        [team.leader]
+      );
       if (verifyUser.length === 0) {
         throw "Usuário não está cadastrado";
       }
+
+      console.log(verifyUser, "verifyUser");
 
       if (verifyUser[0].is_admin) {
         throw "Usuário é administrador, portanto não pode ser líder";
@@ -34,15 +43,16 @@ export class TeamRepo {
         team.leader,
       ]);
 
+      console.log(response, "responseCreate");
       const data: ITeamResponse = response[0];
+      console.log(data, "dataa");
 
-      const result = await connectDb(teamQuery.updateUserSquad, [
-        data.id,
-        data.leader,
-      ]);
+      const result: Array<IUserResponse> = await connectDb(
+        teamQuery.updateUserSquad,
+        [data.id, data.leader]
+      );
 
-      console.log("Campo squad atualizado!", result[0]);
-      console.log("Data", data);
+      console.log(result, "result");
 
       //     console.log(data, "response from DB")
       return data;
@@ -126,10 +136,10 @@ export class TeamRepo {
     teamId: string
   ) {
     try {
-      const userVerifyLeader = await connectDb(teamQuery.getLeaderTeam, [
-        teamId,
-        userLogin,
-      ]);
+      const userVerifyLeader: Array<ITeamResponse> = await connectDb(
+        teamQuery.getLeaderTeam,
+        [teamId, userLogin]
+      );
 
       if (userVerifyLeader.length === 0 && userIsAdmin === false) {
         throw "Não tem permissão";
@@ -139,7 +149,10 @@ export class TeamRepo {
         throw "Não tem permissão para alterar a si próprio";
       }
 
-      const response = await connectDb(query.updateUserSquad, [userId, null]);
+      const response: Array<IUserResponse> = await connectDb(
+        query.updateUserSquad,
+        [userId, null]
+      );
 
       const data: IUserResponse = response[0];
       return data;
