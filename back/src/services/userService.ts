@@ -23,7 +23,7 @@ export class AccountsService {
         is_admin: false,
       };
 
-      const dbResponse = await accountsRepo.createUser(data);
+      const dbResponse:IUser = await accountsRepo.createUser(data);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");
