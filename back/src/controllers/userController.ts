@@ -66,22 +66,37 @@ export class AccountsController {
 
     try {
       const { decoded }: any = req.body;
+      const user: IUser = req.body;
+      //Verifica se é um usuário comum tentando alterar o próprio cadastro, ou se é um adm.
       if (decoded.user.id !== req.params.user_id && !decoded.user.is_admin) {
         throw "Error: Não é possível alterar o cadastro de outro usuário";
       }
-      if(!decoded.user.is_admin && req.body.is_admin !== undefined){
+      //Verifica se é um usuário comum tentando se transforma em adm.
+      if(!decoded.user.is_admin && user.is_admin == true){
         throw 'Error: Esse usuário não pode alterar a coluna de Administrador'
       }
 
-      const user: IUser = req.body;
+      //Nessa rota não é possível alterar o squad de um cadastro.
 
-      new NameValidator(user.username);
-      new EmailValidator(user.email);
-      new PasswordValidator(user.password);
+      // if(!decoded.user.is_admin && req.body.squad !== undefined){
+      //   throw 'Error: Esse usuário não pode alterar a coluna de equipe'
+      // }
+
+      
+      if(user.username !== undefined){
+        new NameValidator(user.username);
+      }
+      if(user.email !== undefined){
+        new EmailValidator(user.email);
+      }
+      if(user.password !== undefined){
+        new PasswordValidator(user.password);
+      }
+      
 
       const serviceResponse:IUserResponse = await accountsService.updateUser(user, req.params.user_id);
 
-      response.message = "Usuário criado com sucesso!";
+      response.message = "Usuário atualizado com sucesso!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -89,7 +104,7 @@ export class AccountsController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível criar o usuário!";
+      response.message = "Não foi possível atualizar o usuário!";
       response.data = null;
       response.error = error;
 

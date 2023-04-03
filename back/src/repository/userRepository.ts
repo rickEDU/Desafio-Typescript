@@ -33,7 +33,6 @@ export class Accountsrepo {
       ]);
 
       const data: IUser = response[0];
-      //     console.log(data, "response from DB")
       return data;
     } catch (error) {
       console.log(TAG, "error caught at createUser()");
@@ -48,14 +47,20 @@ export class Accountsrepo {
       if (usuarioDB.length === 0) {
         throw "Usuário não encontrado";
       }
-
+      // Verifica se o usuário que o Ator quer fazer update faz parte de uma equipe
+      // e se o Ator está tentando transformar o cadastro em administrador 
       if(usuarioDB[0].squad!==null && user.is_admin == true){
         throw "Esse usuário faz parte de uma equipe, logo não pode se tornar administrador"
       }
-
+      //Impede um Administrador "demotar" outro ou ele mesmo para um usuário comum.
       if(usuarioDB[0].is_admin && user.is_admin == false){
         throw "Essa coluna não pode ser alterada"
       }
+      // Verifica se o usuário era admin e se ele estava tetando trocar 
+      // a coluna squad de um cadastro
+      // if(!isAdmin && user.squad!==undefined){
+      //   throw "Esse usuário não tem permição de alterar a equipe"
+      // }
       
       Object.assign(usuarioDB[0],user)
 

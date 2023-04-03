@@ -45,6 +45,15 @@ export class AccountsService {
         const hashedPassword = bcrypt.hashSync(user.password, 10);
         data.password = hashedPassword
       }
+      //verifica se a única chave enviada no corpo foi 'squad'
+      //ela não pode ser alterada nessa rota
+      if(Object.keys(data).length ==1 && Object.keys(data)[0]=='squad'){
+        throw "Não é possível alterar o squad nessa rota"
+      }
+      //Verifica se o corpo da requisição veio vazia
+      if(Object.keys(data).length == 0){
+        throw "O requisição está sem corpo"
+      }
       const dbResponse:IUserResponse = await accountsRepo.updateUser(data, id);
       return dbResponse;
     } catch (error) {
