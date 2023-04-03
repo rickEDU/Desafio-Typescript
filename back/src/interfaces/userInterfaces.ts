@@ -9,16 +9,15 @@ export interface IUserDataComplete {
   password: string;
 }
 
-// export interface IUserData {
-//   id: string;
-//   username: string;
-//   email: string;
-//   first_name: string;
-//   last_name: string;
-//   password?:string;
-//   squad?: string;
-//   is_admin: boolean;
-// }
+export interface IUserResponse {
+  id?: UUID;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  squad?: UUID;
+  isAdmin: string;
+}
 
 export interface IUser {
   id?: UUID;
