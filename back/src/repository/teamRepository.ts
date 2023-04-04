@@ -168,6 +168,7 @@ export class TeamRepo {
       throw error;
     }
   }
+
   public async removeMemberTeam(
     userLogin: string,
     userIsAdmin: boolean,

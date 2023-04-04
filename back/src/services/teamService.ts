@@ -16,6 +16,7 @@ export class TeamService {
       throw error;
     }
   }
+
   public async deleteTeam(idSquad: string) {
     try {
       //consertar os tipos da resposta dbResponse
@@ -26,6 +27,7 @@ export class TeamService {
       throw error;
     }
   }
+
   public async updateTeam(
     userLogin: UUID,
     userIsAdmin: boolean,
@@ -69,6 +71,7 @@ export class TeamService {
       throw error;
     }
   }
+
   public async removeMemberTeam(
     userLogin: string,
     userIsAdmin: boolean,
