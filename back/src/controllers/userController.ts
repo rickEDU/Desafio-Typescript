@@ -14,6 +14,7 @@ import {
   ILogin,
   IUserResponse,
   ILoginResponse,
+  IResponse,
 } from "../interfaces/userInterfaces.js";
 import jwt from "jsonwebtoken";
 
@@ -195,7 +196,7 @@ export class AccountsController {
   }
   
 public async getOneUser(req: Request ,res:Response){
-  const response: ApiResponse<ApiResponseData> = {
+  const response: ApiResponse<IResponse> = {
     message: "",
     data: null,
     error: null,
@@ -203,8 +204,10 @@ public async getOneUser(req: Request ,res:Response){
   try{
     const userID = req.params.user_id;
     const user = await accountsService.getOneUser(userID,req.body.decoded.user);
-    res.status(200).send(user);
+    
     response.message = "usuário encontrado!";
+    response.data = user
+    res.status(200).json(response);
   }catch (err) {
     console.log(err);
     response.message = "Erro 123";

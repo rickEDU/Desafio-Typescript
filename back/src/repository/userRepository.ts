@@ -6,10 +6,12 @@ import {
   ApiResponseData,
   IUserResponse,
   IUserRequest,
+  IResponse,
 } from "../interfaces/userInterfaces";
 import { ITeamResponse } from "../interfaces/teamInterfaces";
 import { connectDb } from "./data/connection.js";
 import { query } from "./data/queries.js";
+import { teamQuery } from "./data/teamQueries";
 
 const TAG = "userRepository";
 
@@ -112,37 +114,55 @@ export class Accountsrepo {
     try{
       
       if(objeto.is_admin){
-        const response1 = await connectDb(query.getUserById, [userID]);
-        return response1[0];
+        const response = await connectDb(query.getUserById, [userID]);
+        const data: IResponse ={
+          id: response[0].id,
+          username: response[0].username,
+          email: response[0].email,
+          first_name: response[0].first_name,
+          last_name: response[0].last_name,
+          squad: response[0].squad,
+          is_admin: response[0].is_admin
+        }
+        console.log(response)
+        return data;
       }else if(objeto.squad== null){
         throw 'Error usuário não faz parte de uma equipe';
-      }else{
-        const response2 = await connectDb(teamQuery.getLeader, [objeto.id]);
-        if(response2.length == 0 ){
+      }else if (!objeto.is_leader){
           throw 'Usuário não tem permissão de acessar essa informação';
         }else{
-          const response3 = await connectDb(query.getUserById, [userID]);
-          if(response3[0].squad == null){
+          const response = await connectDb(query.getUserLeader, [userID]);
+          if(response.length ==0){
+            throw 'usuário não encontrado'
+          }
+          console.log(response)
+          const data: IResponse ={
+            id: response[0].id,
+            username: response[0].username,
+            email: response[0].email,
+            first_name: response[0].first_name,
+            last_name: response[0].last_name,
+            squad: response[0].squad,
+            is_admin: response[0].is_admin
+          }
+          
+          if(response[0].squad == null){
             throw 'Usuário não tem permissão de acessar essa informação'
-          }else if(response3[0].squad == objeto.squad){
-            return response3[0];
+          }else if(response[0].squad == objeto.squad){
+            return data;
+          }else if (response[0].id == response[0].leader){
+            return data;
           }else{
-            const response4 = await connectDb(teamQuery.getLeader, [userID]);
-            if(response4.length ==0){
               throw 'Usuário não tem permissão de acessar essa informação';
-            }else{
-              return response3[0];
-            }
           }
         }
-      }
 
     }catch(error){
       console.log(TAG,error);
       throw error;
-      }
+    }
+  
   }
-
   public async deleteUser(id: string) {
     try {
       // Verificando o usuário é lider de uma equipe
