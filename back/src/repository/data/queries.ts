@@ -68,7 +68,13 @@ SELECT id
 FROM ${tableUsers}
 WHERE squad=$1;
 `;
-
+const getLogin = `
+SELECT u.id, u.username, u.squad, u.is_admin, u.password, e.leader
+FROM usuario u
+LEFT JOIN equipe e
+ON u.squad = e.id
+WHERE username=$1
+`
 const updateUserSquad = `
 UPDATE ${tableUsers}
 SET squad = $2
@@ -87,4 +93,5 @@ export const query = {
   leaderSquad,
   selectUserSquad,
   updateUserSquad,
+  getLogin,
 };

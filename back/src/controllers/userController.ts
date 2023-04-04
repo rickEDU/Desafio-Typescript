@@ -12,6 +12,7 @@ import {
   ILoginData,
   ILogin,
   IUserResponse,
+  ILoginResponse,
 } from "../interfaces/userInterfaces.js";
 import jwt from "jsonwebtoken";
 
@@ -142,7 +143,7 @@ export class AccountsController {
 
 export class LoginController {
   public async login(req: Request, res: Response) {
-    const response: ApiResponse<IUserResponse> = {
+    const response: ApiResponse<ILoginResponse> = {
       message: "",
       data: null,
       error: null,
@@ -153,7 +154,7 @@ export class LoginController {
       new NameValidator(username);
       new PasswordValidator(password);
 
-      const responseLogin: IUserResponse = await loginService.LoginUser(
+      const responseLogin = await loginService.LoginUser(
         username,
         password
       );

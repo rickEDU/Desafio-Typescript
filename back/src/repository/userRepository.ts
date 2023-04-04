@@ -111,7 +111,7 @@ export class Accountsrepo {
   public async SelectUser(username: string) {
     try {
       // Verificando se já está cadastrado no banco de dados
-      const user: Array<IUser> = await connectDb(query.getUser, [username]);
+      const user: Array<ILogin> = await connectDb(query.getLogin, [username]);
       if (user.length === 0) {
         throw "Usuário não está cadastrado";
       }
