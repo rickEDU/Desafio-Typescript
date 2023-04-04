@@ -107,11 +107,6 @@ export class TeamRepo {
         throw "O novo líder deve ser membro da equipe";
       }
 
-      //não pode alterar si próprio
-      if (userLogin === teamLeaderId) {
-        throw "Não tem permissão para alterar a si próprio";
-      }
-
       const response: Array<ITeamResponse> = await connectDb(
         teamQuery.updateTeam,
         [teamId, teamName, teamLeaderId]
