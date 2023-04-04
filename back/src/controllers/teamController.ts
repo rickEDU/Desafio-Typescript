@@ -141,6 +141,7 @@ export class TeamController {
       const body = req.body;
       const decoded: IDecode<IUserResponse> = body.decoded;
 
+      // Creio que seja melhor olhando o cookie de sessão, eu acho que Eduardo já fez essa verificação
       if (
         decoded.user.id === undefined ||
         decoded.user.is_admin === undefined

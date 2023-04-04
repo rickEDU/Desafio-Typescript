@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 const TAG = "/AUTHENTICATED ";
 const TAGIsadmin = "/ISADMIN ";
+const TAGIsAdminOrLeader = "/ISADMINORLEADER ";
 
 export default class auth {
   public authenticated(req: Request, res: Response, next: NextFunction) {
@@ -35,13 +36,24 @@ export default class auth {
         // Se o usuário for um administrador, permite o acesso à próxima rota/middleware
         next();
       } else {
-        // Se o usuário não for um administrador, retorna um erro 403 Forbidden
-        // res.status(403).json({ error: 'Não autorizado', isAdmin: false });
-        // res.json({ isAdmin: false });
         throw "Error: User is not admin.";
       }
     } catch (e) {
       console.log(TAGIsadmin, e);
+      res
+        .status(400)
+        .json({ message: "Error", code: 400, data: null, error: e });
+    }
+  }
+
+  public isAdminOrLeader(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (!req.body.decoded.user.is_admin && !req.body.decoded.user.is_leader) {
+        throw "User is not Admin or Leader.";
+      }
+      next();
+    } catch (e) {
+      console.log(TAGIsAdminOrLeader, e);
       res
         .status(400)
         .json({ message: "Error", code: 400, data: null, error: e });
