@@ -4,7 +4,7 @@ import {
   NameValidator,
   EmailValidator,
   PasswordValidator,
-  UsernameValidator
+  UsernameValidator,
 } from "../middlewares/validators.js";
 import {
   ApiResponseData,
@@ -44,7 +44,7 @@ export class AccountsController {
 
       const serviceResponse = await accountsService.createUser(user);
 
-      response.message = "Usuário criado com sucesso!";
+      response.message = "User successfully created!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -52,7 +52,7 @@ export class AccountsController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível criar o usuário!";
+      response.message = "Could not create user!";
       response.data = null;
       response.error = error;
 
@@ -74,7 +74,7 @@ export class AccountsController {
       const user: IUser = req.body;
 
       if (!decoded.user.is_admin && user.is_admin == true) {
-        throw "Error: Esse usuário não pode alterar a coluna de Administrador";
+        throw "Error: This user cannot change the Administrator column";
       }
 
       //Nessa rota não é possível alterar o squad de um cadastro.
@@ -94,8 +94,8 @@ export class AccountsController {
       if (user.last_name !== undefined) {
         new NameValidator(user.last_name);
       }
-      if(user.is_admin !== undefined && typeof(user.is_admin)!== 'boolean'){
-        throw 'is_admin deve ser um boolean.'
+      if (user.is_admin !== undefined && typeof user.is_admin !== "boolean") {
+        throw "is_admin must be a boolean.";
       }
 
       const serviceResponse: IUserResponse = await accountsService.updateUser(
@@ -103,7 +103,7 @@ export class AccountsController {
         req.params.user_id
       );
 
-      response.message = "Usuário atualizado com sucesso!";
+      response.message = "User updated successfully!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -111,7 +111,7 @@ export class AccountsController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível atualizar o usuário!";
+      response.message = "Unable to update User!";
       response.data = null;
       response.error = error;
 
@@ -132,7 +132,7 @@ export class AccountsController {
       const id_regex: string = req.params.user_id.replace(/ /g, "");
       const serviceResponse = await accountsService.deleteUser(id_regex);
 
-      response.message = "Usuário deletado com sucesso!";
+      response.message = "User deleted successfully!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -140,7 +140,7 @@ export class AccountsController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível deletar o usuário!";
+      response.message = "Unable to delete user!";
       response.data = null;
       response.error = error;
 
@@ -231,10 +231,7 @@ export class LoginController {
       new NameValidator(username);
       new PasswordValidator(password);
 
-      const responseLogin = await loginService.LoginUser(
-        username,
-        password
-      );
+      const responseLogin = await loginService.LoginUser(username, password);
       const secretKey: string | undefined = process.env.JWTSECRET;
       if (!secretKey) {
         throw "Error: SecretKey is not a string.";
@@ -264,7 +261,7 @@ export class LoginController {
     try {
       res.clearCookie("session");
 
-      response.message = "Usuário deslogado";
+      response.message = "Logged out user";
       return res.status(200).json(response);
     } catch (error: any) {
       console.log(TAG, error);
