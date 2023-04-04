@@ -77,6 +77,35 @@ export class AccountsService {
       throw error;
     }
   }
+  public async getUserId(id: string){
+    try {
+      const dbResponse = await accountsRepo.getUserId(id);
+      return dbResponse;
+    } catch (error) {
+      console.log(TAG, "error caught at");
+      throw error;
+    }
+  }
+
+public async getAllUsers(){
+  try{
+    const dbResponse = await accountsRepo.getAllUsers();
+    return dbResponse;
+  }catch (error){
+    console.log(TAG, "error caught at");
+    throw error;
+  }
+}
+  
+public async getOneUser(userID: string, userLogin: ILoginResponse){
+  try{
+    const dbResponse = await accountsRepo.getOneUser(userID,userLogin);
+    return dbResponse;
+  }catch (error){
+    console.log(TAG, "error caught at");
+    throw error;
+  }
+}
 }
 
 export class LoginService {
@@ -112,4 +141,6 @@ export class LoginService {
       throw error;
     }
   }
+
+
 }
