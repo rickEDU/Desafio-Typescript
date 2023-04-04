@@ -51,20 +51,10 @@ export class TeamService {
     }
   }
 
-  public async addMemberTeam(
-    userLogin: string,
-    userIsAdmin: boolean,
-    userId: string,
-    teamId: string
-  ) {
+  public async addMemberTeam(userId: string, teamId: string) {
     try {
       //consertar os tipos da resposta dbResponse
-      const dbResponse = await teamRepo.addMemberTeam(
-        userLogin,
-        userIsAdmin,
-        userId,
-        teamId
-      );
+      const dbResponse = await teamRepo.addMemberTeam(userId, teamId);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");

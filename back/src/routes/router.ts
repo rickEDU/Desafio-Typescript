@@ -15,6 +15,7 @@ const Auth = new auth();
 route.post(
   "/teams/:team_id/member/:user_id",
   Auth.authenticated,
+  Auth.isAdminOrLeader,
   teamController.addMemberTeam
 );
 route.post("/users/", accountsController.createUser);
