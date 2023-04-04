@@ -70,3 +70,13 @@ export interface ApiResponse<T> {
 export interface ILoginData {
   id: UUID;
 }
+
+export interface IResponse {
+  id?: UUID;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  squad?: UUID;
+  is_admin: boolean;
+}

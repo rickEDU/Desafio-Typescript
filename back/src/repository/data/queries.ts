@@ -75,11 +75,23 @@ LEFT JOIN equipe e
 ON u.squad = e.id
 WHERE username=$1
 `;
+const getUserLeader = `
+SELECT u.id, u.username, u.email, u.first_name, u.last_name, u.squad, u.is_admin, e.leader
+FROM usuario u
+LEFT JOIN equipe e
+ON u.squad = e.id
+WHERE u.id=$1
+`;
 const updateUserSquad = `
 UPDATE ${tableUsers}
 SET squad = $2
 WHERE id = $1
 RETURNING ${allCollumns};
+`;
+
+const getAllUsers=`
+SELECT * 
+FROM public.${tableUsers}
 `;
 
 // Objeto com todas as constantes.
@@ -94,4 +106,6 @@ export const query = {
   selectUserSquad,
   updateUserSquad,
   getLogin,
+  getAllUsers,
+  getUserLeader,
 };

@@ -6,10 +6,13 @@ import {
   ApiResponseData,
   IUserResponse,
   IUserRequest,
+  IResponse,
+  ILoginResponse,
 } from "../interfaces/userInterfaces";
 import { ITeamResponse } from "../interfaces/teamInterfaces";
 import { connectDb } from "./data/connection.js";
 import { query } from "./data/queries.js";
+import { teamQuery } from "./data/teamQueries";
 
 const TAG = "userRepository";
 
@@ -85,6 +88,79 @@ export class Accountsrepo {
     }
   }
 
+  public async getUserId(username: string){
+    try {
+      const response = await connectDb(query.getUserById, [username]);
+      const data: IUser = response[0];
+      return data;
+    } catch (error) {
+      console.log(TAG ,"Usuario não encontrado!");
+        throw error;
+    }
+  }
+  
+  public async getAllUsers(){
+    try{
+      const response = await connectDb(query.getAllUsers, []);
+      console.log(response, "algo chegou")
+      const data: IUser[] = response;
+      return data;
+    }catch(error){
+      console.log(TAG,"Usuarios não encontrados!");
+      throw error;
+    }
+  }
+  
+  public async getOneUser(userID: string, userLogin:ILoginResponse){
+    try{
+      
+      if(userLogin.is_admin){
+        const response = await connectDb(query.getUserById, [userID]);
+        const data: IResponse ={
+          id: response[0].id,
+          username: response[0].username,
+          email: response[0].email,
+          first_name: response[0].first_name,
+          last_name: response[0].last_name,
+          squad: response[0].squad,
+          is_admin: response[0].is_admin
+        }
+        return data;
+      }else if(userLogin.squad== null){
+        throw 'Error user is not part of a team';
+      }else if (!userLogin.is_leader){
+          throw 'User is not allowed to access this information';
+        }else{
+          const response = await connectDb(query.getUserLeader, [userID]);
+          if(response.length ==0){
+            throw 'User not found'
+          }
+          const data: IResponse ={
+            id: response[0].id,
+            username: response[0].username,
+            email: response[0].email,
+            first_name: response[0].first_name,
+            last_name: response[0].last_name,
+            squad: response[0].squad,
+            is_admin: response[0].is_admin
+          }
+          if(response[0].squad == null){
+            throw 'User is not allowed to access this information'
+          }else if(response[0].squad == userLogin.squad){
+            return data;
+          }else if (response[0].id == response[0].leader){
+            return data;
+          }else{
+              throw 'User is not allowed to access this information';
+          }
+        }
+
+    }catch(error){
+      console.log(TAG,error);
+      throw error;
+    }
+  
+  }
   public async deleteUser(id: string) {
     try {
       // Verificando o usuário é lider de uma equipe
