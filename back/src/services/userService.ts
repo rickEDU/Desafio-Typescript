@@ -1,5 +1,5 @@
 import { Accountsrepo } from "../repository/userRepository.js";
-import { IUser, IUserResponse } from "../interfaces/userInterfaces.js";
+import { ILogin, ILoginResponse, IUser, IUserResponse } from "../interfaces/userInterfaces.js";
 import bcrypt from "bcrypt";
 
 const accountsRepo = new Accountsrepo();
@@ -80,22 +80,25 @@ export class LoginService {
     try {
       //CONSERTAR DEPOIS: TEM QUE FAZER O HASH DA SENHA AQUI
       // const hashedPassword = bcrypt.hashSync(password, 10);
-      const dbResponse:IUser = await accountsRepo.SelectUser(username);
+      const dbResponse = await accountsRepo.SelectUser(username);
 
       //// Verifica se a senha está correta
       const isPasswordValid:boolean = bcrypt.compareSync(password, dbResponse.password);
       if (!isPasswordValid) {
         throw "Senha inválida";
       }
-      const data:IUserResponse = {
+      const data:ILoginResponse = {
         id: dbResponse.id,
         username: dbResponse.username,
-        email: dbResponse.email,
-        first_name: dbResponse.first_name,
-        last_name: dbResponse.last_name,
         squad: dbResponse.squad,
         is_admin: dbResponse.is_admin,
       };
+      if(dbResponse.id == dbResponse.leader){
+        data.is_leader = true
+      }else{
+        data.is_leader = false
+      }
+
       return data;
     } catch (error) {
       console.log(TAG, "error caught at");
