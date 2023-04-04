@@ -48,10 +48,20 @@ export class PasswordValidator extends RegexValidator {
 }
 export class NameValidator extends RegexValidator {
   constructor(data: string) {
-    super(data, 'Error: Nome inválido.');
+    super(data, 'Error: Name inválido.');
   }
 
   protected get regex(): RegExp {
     return /^([a-z]{1,})([ ]{1}[a-z]{1,}){0,}$/gim;
+  }
+}
+
+export class UsernameValidator extends RegexValidator {
+  constructor(data: string) {
+    super(data, 'Error: Username inválido.');
+  }
+
+  protected get regex(): RegExp {
+    return /^[a-z]{1,}$/gim;
   }
 }

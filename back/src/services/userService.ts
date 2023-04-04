@@ -52,7 +52,7 @@ export class AccountsService {
       }
       //Verifica se o corpo da requisição veio vazia
       if(Object.keys(data).length == 0){
-        throw "O requisição está sem corpo"
+        throw "A requisição está sem corpo"
       }
       const dbResponse:IUserResponse = await accountsRepo.updateUser(data, id);
       return dbResponse;
