@@ -26,6 +26,7 @@ route.patch(
   Auth.authenticated,
   accountsController.updateUser
 );
+route.patch("/teams/:team_id", Auth.authenticated, teamController.updateTeam);
 
 route.delete(
   "/users/:user_id",

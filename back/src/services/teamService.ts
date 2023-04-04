@@ -26,6 +26,28 @@ export class TeamService {
       throw error;
     }
   }
+  public async updateTeam(
+    userLogin: UUID,
+    userIsAdmin: boolean,
+    teamId: string,
+    teamName: string,
+    teamLeaderId: UUID
+  ) {
+    try {
+      //consertar os tipos da resposta dbResponse
+      const dbResponse = await teamRepo.updateTeam(
+        userLogin,
+        userIsAdmin,
+        teamId,
+        teamName,
+        teamLeaderId
+      );
+      return dbResponse;
+    } catch (error) {
+      console.log(TAG, "error caught at");
+      throw error;
+    }
+  }
 
   public async addMemberTeam(
     userLogin: string,

@@ -80,6 +80,56 @@ export class TeamController {
     }
   }
 
+  public async updateTeam(req: Request, res: Response) {
+    // Padronizar a resposta
+
+    const response: ApiResponse<ITeamResponse> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+
+    try {
+      const body = req.body;
+      const decoded: IDecode<IUserResponse> = body.decoded;
+
+      if (
+        decoded.user.id === undefined ||
+        decoded.user.is_admin === undefined
+      ) {
+        throw "Usuário não logado";
+      }
+
+      const team: ITeam = req.body;
+
+      new NameValidator(team.name);
+      new StringValidator(team.leader);
+
+      const serviceResponse = await teamService.updateTeam(
+        decoded.user.id,
+        decoded.user.is_admin,
+        req.params.team_id,
+        team.name,
+        team.leader
+      );
+
+      response.message = "Time atualizado com sucesso!";
+      response.data = serviceResponse;
+      response.error = null;
+
+      res.status(200).json(response);
+    } catch (error) {
+      console.log(TAG, "\n", error);
+
+      response.message = "Não foi possível atualizar o time!";
+      response.data = null;
+      response.error = error;
+
+      res.status(500);
+      res.json(response);
+    }
+  }
+
   public async addMemberTeam(req: Request, res: Response) {
     const response: ApiResponse<IUserResponse> = {
       message: "",

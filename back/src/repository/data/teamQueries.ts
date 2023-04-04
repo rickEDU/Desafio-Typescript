@@ -45,7 +45,7 @@ RETURNING ${allCollumns};
 const updateTeam = `
 UPDATE ${teamTable}
 SET name = $2,
-leader = $3,
+leader = $3
 WHERE id = $1
 RETURNING *;
 `;

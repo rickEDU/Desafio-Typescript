@@ -72,27 +72,21 @@ export class AccountsController {
         throw "Error: Não é possível alterar o cadastro de outro usuário";
       }
       //Verifica se é um usuário comum tentando se transforma em adm.
-      if(!decoded.user.is_admin && user.is_admin == true){
-        throw 'Error: Esse usuário não pode alterar a coluna de Administrador'
+      if (!decoded.user.is_admin && user.is_admin == true) {
+        throw "Error: Esse usuário não pode alterar a coluna de Administrador";
       }
 
       //Nessa rota não é possível alterar o squad de um cadastro.
 
-      // if(!decoded.user.is_admin && req.body.squad !== undefined){
-      //   throw 'Error: Esse usuário não pode alterar a coluna de equipe'
-      // }
-
-      
-      if(user.username !== undefined){
+      if (user.username !== undefined) {
         new NameValidator(user.username);
       }
-      if(user.email !== undefined){
+      if (user.email !== undefined) {
         new EmailValidator(user.email);
       }
-      if(user.password !== undefined){
+      if (user.password !== undefined) {
         new PasswordValidator(user.password);
       }
-      
 
       const serviceResponse: IUserResponse = await accountsService.updateUser(
         user,

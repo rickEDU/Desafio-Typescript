@@ -81,6 +81,51 @@ export class TeamRepo {
     }
   }
 
+  public async updateTeam(
+    userLogin: UUID,
+    userIsAdmin: boolean,
+    teamId: string,
+    teamName: string,
+    teamLeaderId: UUID
+  ) {
+    try {
+      const userVerifyLeader: Array<ITeamResponse> = await connectDb(
+        teamQuery.getLeaderTeam,
+        [teamId, userLogin]
+      );
+      //deve ser admin ou líder
+      if (userVerifyLeader.length === 0 && userIsAdmin === false) {
+        throw "Não tem permissão";
+      }
+
+      // Tem que consertar a query para não retornar o password
+      const newLeader: Array<IUser> = await connectDb(query.getUserById, [
+        teamLeaderId,
+      ]);
+
+      //membros de outras equipes não podem ser líderes
+      if (newLeader[0].squad !== teamId) {
+        throw "O novo líder deve ser membro da equipe";
+      }
+
+      //não pode alterar si próprio
+      if (userLogin === teamLeaderId) {
+        throw "Não tem permissão para alterar a si próprio";
+      }
+
+      const response: Array<ITeamResponse> = await connectDb(
+        teamQuery.updateTeam,
+        [teamId, teamName, teamLeaderId]
+      );
+
+      const data: ITeamResponse = response[0];
+      return data;
+    } catch (error) {
+      console.log("error caught at update", TAG);
+      throw error;
+    }
+  }
+
   public async addMemberTeam(
     userLogin: string,
     userIsAdmin: boolean,
@@ -102,6 +147,9 @@ export class TeamRepo {
       ]);
       if (userIsMember[0].squad !== null) {
         throw "Usuário já pertence a uma equipe";
+      }
+      if (userIsMember[0].is_admin) {
+        throw "Administradores não podem entrar em equipes";
       }
 
       if (userLogin === userId) {
