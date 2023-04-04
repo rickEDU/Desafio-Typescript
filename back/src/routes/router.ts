@@ -1,22 +1,50 @@
 import { Router } from "express";
+import { TeamController } from "../controllers/teamController.js";
 import {
-  AccountsController, LoginController
+  AccountsController,
+  LoginController,
 } from "../controllers/userController.js";
 import auth from "../middlewares/auth.js";
 
 const route: Router = Router();
 const accountsController = new AccountsController();
 const loginController = new LoginController();
+const teamController = new TeamController();
 const Auth = new auth();
 
-route.post("/users", accountsController.createUser);
-route.delete("/users/:user_id", Auth.authenticated,accountsController.deleteUser);
+route.post(
+  "/teams/:team_id/member/:user_id",
+  Auth.authenticated,
+  teamController.addMemberTeam
+);
+route.post("/users/", accountsController.createUser);
 route.post("/login", loginController.login);
+route.post("/teams/", Auth.authenticated, teamController.createTeam);
 
-route.get('/auth', Auth.authenticated)
-// route.post("/accounts/login", accountsController.login);
-// route.get('/getAll', accountsController.getAllUsers);
-// route.patch('/accounts/', accountsController.updateUser);
-// route.delete('/delete', accountsController.deleteUser);
+route.patch(
+  "/users/:user_id",
+  Auth.authenticated,
+  accountsController.updateUser
+);
+route.patch("/teams/:team_id", Auth.authenticated, teamController.updateTeam);
+
+route.delete(
+  "/users/:user_id",
+  Auth.authenticated,
+  Auth.isAdmin,
+  accountsController.deleteUser
+);
+route.delete(
+  "/teams/:team_id",
+  Auth.authenticated,
+  Auth.isAdmin,
+  teamController.deleteTeam
+);
+route.delete(
+  "/teams/:team_id/member/:user_id",
+  Auth.authenticated,
+  teamController.removeMemberTeam
+);
+route.delete("/logout", loginController.logout);
 
 export { route };

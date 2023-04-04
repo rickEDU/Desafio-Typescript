@@ -1,16 +1,21 @@
 /* Table user */
 const tableUsers = "usuario";
 /* Columns */
-// const columnId = "id";
-// const columnName = "username";
-// const columnEmail = "email";
-// const columnPassword = "password";
-// const columnFirstName= "first_name";
-// const columnLastName= "last_name";
-// const columnIsAdmin = "is_admin";
-const allCollumns = `id, username, email, first_name, last_name, is_admin`;
+// Column id;
+// Column username;
+// Column email;
+// Column first_name;
+// Column last_name;
+// Column password;
+// Column squad;
+// Column is_admin;
+const allCollumns = `id, username, email, first_name, last_name, squad, is_admin`;
 
 /* Table team */
+const tableTeams = "equipe";
+// Column id;
+// Column name;
+// Column leader;
 
 // Seleciona todas as informações da tabela
 const getUsers = `
@@ -20,13 +25,18 @@ SELECT * FROM ${tableUsers};
 const getUser = `
 SELECT *
 FROM public.${tableUsers} 
-WHERE username = $1;
+WHERE username = $1
 `;
 const deleteUser = `
 DELETE
 FROM public.${tableUsers} 
 WHERE id = $1
 RETURNING ${allCollumns};
+`;
+const getUserById = `
+SELECT *
+FROM public.${tableUsers} 
+WHERE id = $1;
 `;
 
 const insertUser = `
@@ -39,23 +49,42 @@ const updateUser = `
 UPDATE ${tableUsers}
 SET username = $2,
 email = $3,
-    password = $4
+first_name = $4,
+last_name = $5,
+password = $6,
+is_admin = $7
 WHERE id = $1
-RETURNING *;
+RETURNING ${allCollumns};
 `;
-
 
 const leaderSquad = `
 SELECT *
-FROM equipe
+FROM ${tableTeams}
 WHERE leader=$1
-`
+`;
+
+const selectUserSquad = `
+SELECT id
+FROM ${tableUsers}
+WHERE squad=$1;
+`;
+
+const updateUserSquad = `
+UPDATE ${tableUsers}
+SET squad = $2
+WHERE id = $1
+RETURNING ${allCollumns};
+`;
+
 // Objeto com todas as constantes.
 export const query = {
   getUsers,
   getUser,
+  getUserById,
   deleteUser,
   insertUser,
   updateUser,
   leaderSquad,
+  selectUserSquad,
+  updateUserSquad,
 };
