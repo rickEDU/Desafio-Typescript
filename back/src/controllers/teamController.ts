@@ -105,6 +105,11 @@ export class TeamController {
       new NameValidator(team.name);
       new StringValidator(team.leader);
 
+      //não pode alterar si próprio
+      if (decoded.user.id === team.leader) {
+        throw "Não tem permissão para alterar a si próprio";
+      }
+
       const serviceResponse = await teamService.updateTeam(
         decoded.user.id,
         decoded.user.is_admin,
@@ -141,21 +146,13 @@ export class TeamController {
       const body = req.body;
       const decoded: IDecode<IUserResponse> = body.decoded;
 
-      // Creio que seja melhor olhando o cookie de sessão, eu acho que Eduardo já fez essa verificação
-      if (
-        decoded.user.id === undefined ||
-        decoded.user.is_admin === undefined
-      ) {
-        throw "Usuário não logado";
-      }
-
       if (
         !(
           decoded.user.is_leader && decoded.user.squad === req.params.team_id
         ) &&
         decoded.user.is_admin === false
       ) {
-        throw "Not an informed team leader";
+        throw "Not an informed team leader or admin";
       }
 
       if (decoded.user.id === req.params.user_id) {
