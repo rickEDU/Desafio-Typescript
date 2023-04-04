@@ -34,7 +34,7 @@ WHERE id = $1
 RETURNING ${allCollumns};
 `;
 const getUserById = `
-SELECT *
+SELECT ${allCollumns}
 FROM public.${tableUsers} 
 WHERE id = $1;
 `;
@@ -74,7 +74,7 @@ FROM usuario u
 LEFT JOIN equipe e
 ON u.squad = e.id
 WHERE username=$1
-`
+`;
 const updateUserSquad = `
 UPDATE ${tableUsers}
 SET squad = $2

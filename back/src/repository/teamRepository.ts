@@ -65,15 +65,14 @@ export class TeamRepo {
 
       if (userVerifySquad.length > 1) {
         throw "Existe usuários na equipe";
-      } else {
-        await connectDb(query.updateUserSquad, [userVerifySquad[0].id, null]);
       }
-
-      const response: Array<ITeamResponse> = await connectDb(
+      await connectDb(query.updateUserSquad, [userVerifySquad[0].id, null]);
+      const responseDelete: Array<ITeamResponse> = await connectDb(
         teamQuery.deleteTeam,
         [idSquad]
       );
-      const data: ITeamResponse = response[0];
+
+      const data: ITeamResponse = responseDelete[0];
       return data;
     } catch (error) {
       console.log(TAG, "error caught at deleteUser()");
@@ -126,22 +125,9 @@ export class TeamRepo {
     }
   }
 
-  public async addMemberTeam(
-    userLogin: string,
-    userIsAdmin: boolean,
-    userId: string,
-    teamId: string
-  ) {
+  public async addMemberTeam(userId: string, teamId: string) {
     try {
-      const userVerifyLeader: Array<ITeamResponse> = await connectDb(
-        teamQuery.getLeaderTeam,
-        [teamId, userLogin]
-      );
-      if (userVerifyLeader.length === 0 && userIsAdmin === false) {
-        throw "Não tem permissão";
-      }
-
-      // Tem que consertar a query para não retornar o password
+      // Tem que consertar a query para não retornar o password (Feito)
       const userIsMember: Array<IUser> = await connectDb(query.getUserById, [
         userId,
       ]);
@@ -150,10 +136,6 @@ export class TeamRepo {
       }
       if (userIsMember[0].is_admin) {
         throw "Administradores não podem entrar em equipes";
-      }
-
-      if (userLogin === userId) {
-        throw "Não tem permissão para alterar a si próprio";
       }
 
       const response: Array<IUserResponse> = await connectDb(

@@ -149,9 +149,20 @@ export class TeamController {
         throw "Usuário não logado";
       }
 
+      if (
+        !(
+          decoded.user.is_leader && decoded.user.squad === req.params.team_id
+        ) &&
+        decoded.user.is_admin === false
+      ) {
+        throw "Not an informed team leader";
+      }
+
+      if (decoded.user.id === req.params.user_id) {
+        throw "Não tem permissão para alterar a si próprio";
+      }
+
       const serviceResponse = await teamService.addMemberTeam(
-        decoded.user.id,
-        decoded.user.is_admin,
         req.params.user_id,
         req.params.team_id
       );

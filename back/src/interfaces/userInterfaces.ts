@@ -17,6 +17,7 @@ export interface IUserResponse {
   last_name: string;
   squad?: UUID;
   is_admin: boolean;
+  is_leader: boolean;
 }
 export interface IUserRequest {
   id?: UUID;
@@ -45,18 +46,18 @@ export interface IUser {
 }
 
 export interface ILogin {
-  id:UUID;
+  id: UUID;
   username: string;
   squad: UUID;
-  is_admin:boolean;
-  password:string;
+  is_admin: boolean;
+  password: string;
   leader: UUID;
 }
 export interface ILoginResponse {
-  id:UUID;
+  id: UUID;
   username: string;
   squad: UUID;
-  is_admin:boolean;
+  is_admin: boolean;
   is_leader?: boolean;
 }
 
