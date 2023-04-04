@@ -147,6 +147,72 @@ export class AccountsController {
       res.json(response);
     }
   }
+
+  public async getProfile(req: Request, res: Response) {
+    const response: ApiResponse<ApiResponseData> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+  
+    try {
+          const user_id = req.body.decoded.user.id;
+          const userProfile = await accountsService.getUserId(user_id);
+          response.message = "Perfil OK!";
+          response.data = userProfile;
+      
+          res.status(200).json(response);
+
+    } catch (err) {
+      console.log(err);
+      response.message = "Erro 123";
+      response.error = err;
+  
+      res.status(400).json(response);
+    }
+  }
+
+
+  public async getAllUsers(req: Request ,res:Response) {
+    const response: ApiResponse<IUser[]> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+    
+  try { 
+    const serviceResponse = await accountsService.getAllUsers();
+    response.message = "Lista de usuários encontrada!";
+    response.data = serviceResponse;
+    res.status(200).json(response)
+  }catch (err) {
+    console.log(err);
+    response.message = "Erro 123";
+    response.error = err;
+
+    res.status(400).json(response);
+  }
+  }
+  
+public async getOneUser(req: Request ,res:Response){
+  const response: ApiResponse<ApiResponseData> = {
+    message: "",
+    data: null,
+    error: null,
+  };
+  try{
+    const userID = req.params.user_id;
+    const user = await accountsService.getOneUser(userID,req.body.decoded.user);
+    res.status(200).send(user);
+    response.message = "usuário encontrado!";
+  }catch (err) {
+    console.log(err);
+    response.message = "Erro 123";
+    response.error = err;
+
+    res.status(400).json(response);
+  }
+}
 }
 
 export class LoginController {

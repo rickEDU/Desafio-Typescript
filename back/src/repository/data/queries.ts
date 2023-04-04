@@ -82,6 +82,11 @@ WHERE id = $1
 RETURNING ${allCollumns};
 `;
 
+const getAllUsers=`
+SELECT * 
+FROM public.${tableUsers}
+`;
+
 // Objeto com todas as constantes.
 export const query = {
   getUsers,
@@ -94,4 +99,5 @@ export const query = {
   selectUserSquad,
   updateUserSquad,
   getLogin,
+  getAllUsers,
 };
