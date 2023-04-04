@@ -24,6 +24,7 @@ route.post("/teams/", Auth.authenticated, teamController.createTeam);
 route.patch(
   "/users/:user_id",
   Auth.authenticated,
+  Auth.isSelf,
   accountsController.updateUser
 );
 route.patch("/teams/:team_id", Auth.authenticated, teamController.updateTeam);

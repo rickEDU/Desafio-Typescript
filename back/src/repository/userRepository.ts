@@ -48,6 +48,13 @@ export class Accountsrepo {
       if (usuarioDB.length === 0) {
         throw "Usuário não encontrado";
       }
+      //Verifica se o username passado pela requisição já está sendo usado por outro cadastro.
+      if(user.username !== undefined && user.username !== usuarioDB[0].username ){
+        const verifyUsername : IUser[] = await connectDb(query.getUser, [user.username])
+        if(verifyUsername.length !==0){
+          throw 'Esse username já está sendo usado.'
+        }
+      }
       // Verifica se o usuário que o autor quer fazer update faz parte de uma equipe
       // e se o autor está tentando transformar o cadastro em administrador
       if (usuarioDB[0].squad !== null && user.is_admin == true) {
@@ -57,11 +64,6 @@ export class Accountsrepo {
       if (usuarioDB[0].is_admin && user.is_admin == false) {
         throw "Essa coluna não pode ser alterada";
       }
-      // Verifica se o usuário era admin e se ele estava tentando trocar
-      // a coluna squad de um cadastro
-      // if(!isAdmin && user.squad!==undefined){
-      //   throw "Esse usuário não tem permição de alterar a equipe"
-      // }
 
       Object.assign(usuarioDB[0], user);
 
@@ -72,7 +74,6 @@ export class Accountsrepo {
         usuarioDB[0].first_name,
         usuarioDB[0].last_name,
         usuarioDB[0].password,
-        // se poder trocar o time(squad) adicionar o campo aqui;
         usuarioDB[0].is_admin,
       ]);
 

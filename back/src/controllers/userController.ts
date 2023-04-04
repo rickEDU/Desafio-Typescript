@@ -4,6 +4,7 @@ import {
   NameValidator,
   EmailValidator,
   PasswordValidator,
+  UsernameValidator
 } from "../middlewares/validators.js";
 import {
   ApiResponseData,
@@ -34,9 +35,11 @@ export class AccountsController {
     try {
       const user: IUser = req.body;
 
-      new NameValidator(user.username);
+      new UsernameValidator(user.username);
       new EmailValidator(user.email);
       new PasswordValidator(user.password);
+      new NameValidator(user.first_name);
+      new NameValidator(user.last_name);
 
       const serviceResponse = await accountsService.createUser(user);
 
@@ -66,13 +69,9 @@ export class AccountsController {
     };
 
     try {
-      const { decoded }: any = req.body;
+      const { decoded } = req.body;
       const user: IUser = req.body;
-      //Verifica se é um usuário comum tentando alterar o próprio cadastro, ou se é um adm.
-      if (decoded.user.id !== req.params.user_id && !decoded.user.is_admin) {
-        throw "Error: Não é possível alterar o cadastro de outro usuário";
-      }
-      //Verifica se é um usuário comum tentando se transforma em adm.
+
       if (!decoded.user.is_admin && user.is_admin == true) {
         throw "Error: Esse usuário não pode alterar a coluna de Administrador";
       }
@@ -80,13 +79,22 @@ export class AccountsController {
       //Nessa rota não é possível alterar o squad de um cadastro.
 
       if (user.username !== undefined) {
-        new NameValidator(user.username);
+        new UsernameValidator(user.username);
       }
       if (user.email !== undefined) {
         new EmailValidator(user.email);
       }
       if (user.password !== undefined) {
         new PasswordValidator(user.password);
+      }
+      if (user.first_name !== undefined) {
+        new NameValidator(user.first_name);
+      }
+      if (user.last_name !== undefined) {
+        new NameValidator(user.last_name);
+      }
+      if(user.is_admin !== undefined && typeof(user.is_admin)!== 'boolean'){
+        throw 'is_admin deve ser um boolean.'
       }
 
       const serviceResponse: IUserResponse = await accountsService.updateUser(

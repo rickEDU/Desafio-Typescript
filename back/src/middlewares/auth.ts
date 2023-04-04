@@ -47,4 +47,19 @@ export default class auth {
         .json({ message: "Error", code: 400, data: null, error: e });
     }
   }
+  public isSelf(req:Request, res:Response, next: NextFunction){
+    try {
+      // Verifica se o é ele mesmo ou administrador
+      if (req.body.decoded.user.id !== req.params.user_id && !req.body.decoded.user.is_admin) {
+        throw "Error: Esse usuário não tem permissão de alterar o cadastro de outro usuário";
+      } else {
+        next();
+      }
+    } catch (e) {
+      console.log('/IsSelf ', e);
+      res
+        .status(403)
+        .json({ message: "Error", data: null, error: e });
+    }
+  }
 }
