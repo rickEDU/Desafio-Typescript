@@ -7,6 +7,7 @@ import {
   IUserResponse,
   IUserRequest,
   IResponse,
+  ILoginResponse,
 } from "../interfaces/userInterfaces";
 import { ITeamResponse } from "../interfaces/teamInterfaces";
 import { connectDb } from "./data/connection.js";
@@ -110,10 +111,10 @@ export class Accountsrepo {
     }
   }
   
-  public async getOneUser(userID: string,objeto:any){
+  public async getOneUser(userID: string, userLogin:ILoginResponse){
     try{
       
-      if(objeto.is_admin){
+      if(userLogin.is_admin){
         const response = await connectDb(query.getUserById, [userID]);
         const data: IResponse ={
           id: response[0].id,
@@ -124,18 +125,16 @@ export class Accountsrepo {
           squad: response[0].squad,
           is_admin: response[0].is_admin
         }
-        console.log(response)
         return data;
-      }else if(objeto.squad== null){
-        throw 'Error usuário não faz parte de uma equipe';
-      }else if (!objeto.is_leader){
-          throw 'Usuário não tem permissão de acessar essa informação';
+      }else if(userLogin.squad== null){
+        throw 'Error user is not part of a team';
+      }else if (!userLogin.is_leader){
+          throw 'User is not allowed to access this information';
         }else{
           const response = await connectDb(query.getUserLeader, [userID]);
           if(response.length ==0){
-            throw 'usuário não encontrado'
+            throw 'User not found'
           }
-          console.log(response)
           const data: IResponse ={
             id: response[0].id,
             username: response[0].username,
@@ -145,15 +144,14 @@ export class Accountsrepo {
             squad: response[0].squad,
             is_admin: response[0].is_admin
           }
-          
           if(response[0].squad == null){
-            throw 'Usuário não tem permissão de acessar essa informação'
-          }else if(response[0].squad == objeto.squad){
+            throw 'User is not allowed to access this information'
+          }else if(response[0].squad == userLogin.squad){
             return data;
           }else if (response[0].id == response[0].leader){
             return data;
           }else{
-              throw 'Usuário não tem permissão de acessar essa informação';
+              throw 'User is not allowed to access this information';
           }
         }
 

@@ -205,7 +205,7 @@ public async getOneUser(req: Request ,res:Response){
     const userID = req.params.user_id;
     const user = await accountsService.getOneUser(userID,req.body.decoded.user);
     
-    response.message = "usuário encontrado!";
+    response.message = "Sucess";
     response.data = user
     res.status(200).json(response);
   }catch (err) {

@@ -92,10 +92,9 @@ public async getAllUsers(){
   }
 }
   
-public async getOneUser(userID: string, objeto: any){
+public async getOneUser(userID: string, userLogin: ILoginResponse){
   try{
-    console.log(userID, objeto)
-    const dbResponse = await accountsRepo.getOneUser(userID,objeto);
+    const dbResponse = await accountsRepo.getOneUser(userID,userLogin);
     return dbResponse;
   }catch (error){
     console.log(TAG, "error caught at");
