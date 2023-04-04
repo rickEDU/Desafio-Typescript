@@ -71,14 +71,9 @@ export class AccountsController {
       if (decoded.user.id !== req.params.user_id && !decoded.user.is_admin) {
         throw "Error: Não é possível alterar o cadastro de outro usuário";
       }
-<<<<<<< Updated upstream
       //Verifica se é um usuário comum tentando se transforma em adm.
       if(!decoded.user.is_admin && user.is_admin == true){
         throw 'Error: Esse usuário não pode alterar a coluna de Administrador'
-=======
-      if (!decoded.user.is_admin && req.body.is_admin !== undefined) {
-        throw "Error: Esse usuário não pode alterar a coluna de Administrador";
->>>>>>> Stashed changes
       }
 
       //Nessa rota não é possível alterar o squad de um cadastro.
