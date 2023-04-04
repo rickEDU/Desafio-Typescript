@@ -20,18 +20,18 @@ export class TeamRepo {
       );
 
       if (teamVerifyLeader.length !== 0) {
-        throw "Usuário já é lider de uma equipe";
+        throw "User is already a team leader";
       }
       const verifyUser: Array<IUserResponse> = await connectDb(
         teamQuery.getUser,
         [team.leader]
       );
       if (verifyUser.length === 0) {
-        throw "Usuário não está cadastrado";
+        throw "User is not registered";
       }
 
       if (verifyUser[0].is_admin) {
-        throw "Usuário é administrador, portanto não pode ser líder";
+        throw "User is an administrator, so he cannot be a leader";
       }
 
       const response = await connectDb(teamQuery.insertTeam, [
@@ -41,10 +41,7 @@ export class TeamRepo {
 
       const data: ITeamResponse = response[0];
 
-      const result: Array<IUserResponse> = await connectDb(
-        teamQuery.updateUserSquad,
-        [data.id, data.leader]
-      );
+      await connectDb(teamQuery.updateUserSquad, [data.id, data.leader]);
 
       return data;
     } catch (error) {
@@ -60,11 +57,11 @@ export class TeamRepo {
         [idSquad]
       );
       if (userVerifySquad.length === 0) {
-        throw "Equipe não cadastrada";
+        throw "Team is not registered";
       }
 
       if (userVerifySquad.length > 1) {
-        throw "Existe usuários na equipe";
+        throw "There are users in the team";
       }
       await connectDb(query.updateUserSquad, [userVerifySquad[0].id, null]);
       const responseDelete: Array<ITeamResponse> = await connectDb(
@@ -81,22 +78,11 @@ export class TeamRepo {
   }
 
   public async updateTeam(
-    userLogin: UUID,
-    userIsAdmin: boolean,
     teamId: string,
     teamName: string,
     teamLeaderId: UUID
   ) {
     try {
-      const userVerifyLeader: Array<ITeamResponse> = await connectDb(
-        teamQuery.getLeaderTeam,
-        [teamId, userLogin]
-      );
-      //deve ser admin ou líder
-      if (userVerifyLeader.length === 0 && userIsAdmin === false) {
-        throw "Não tem permissão";
-      }
-
       // Tem que consertar a query para não retornar o password
       const newLeader: Array<IUser> = await connectDb(query.getUserById, [
         teamLeaderId,
@@ -104,7 +90,7 @@ export class TeamRepo {
 
       //membros de outras equipes não podem ser líderes
       if (newLeader[0].squad !== teamId) {
-        throw "O novo líder deve ser membro da equipe";
+        throw "The new leader must be a member of the team";
       }
 
       const response: Array<ITeamResponse> = await connectDb(
@@ -127,10 +113,10 @@ export class TeamRepo {
         userId,
       ]);
       if (userIsMember[0].squad !== null) {
-        throw "Usuário já pertence a uma equipe";
+        throw "User already belongs to a team";
       }
       if (userIsMember[0].is_admin) {
-        throw "Administradores não podem entrar em equipes";
+        throw "Admins can't join teams";
       }
 
       const response: Array<IUserResponse> = await connectDb(
@@ -146,26 +132,8 @@ export class TeamRepo {
     }
   }
 
-  public async removeMemberTeam(
-    userLogin: string,
-    userIsAdmin: boolean,
-    userId: string,
-    teamId: string
-  ) {
+  public async removeMemberTeam(userId: string, teamId: string) {
     try {
-      const userVerifyLeader: Array<ITeamResponse> = await connectDb(
-        teamQuery.getLeaderTeam,
-        [teamId, userLogin]
-      );
-
-      if (userVerifyLeader.length === 0 && userIsAdmin === false) {
-        throw "Não tem permissão";
-      }
-
-      if (userLogin === userId) {
-        throw "Não tem permissão para alterar a si próprio";
-      }
-
       const response: Array<IUserResponse> = await connectDb(
         query.updateUserSquad,
         [userId, null]
