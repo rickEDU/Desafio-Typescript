@@ -83,9 +83,9 @@ export class TeamService {
       console.log(TAG, "Não foi Possivel encontrar as equipes!");
     }
   }
-  public async getOneTeam(teamId: any, team_object: any) {
+  public async getOneTeam(teamId: string, object1: any) {
     try {
-      const teams = await teamRepo.getOneTeam(teamId, team_object);
+      const teams = await teamRepo.getOneTeam(teamId, object1);
       return teams;
     } catch (error) {
       console.log(TAG, "Não foi Possivel encontrar a equipe!");
@@ -93,9 +93,9 @@ export class TeamService {
     }
   }
 
-  public async getViewMembers(user: string, teamId: string) {
+  public async getViewMembers(teamId: string, object1: any) {
     try {
-      const members = await teamRepo.getViewMembers(teamId);
+      const members = await teamRepo.getViewMembers(teamId, object1);
       return members;
     } catch (error) {
       console.log(TAG, "Não foi Possivel encontrar a equipe!");

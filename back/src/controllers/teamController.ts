@@ -248,13 +248,14 @@ export class TeamController {
       const { decoded }: any = req.body;
       const userId = decoded.user.id;
       const teamId = req.params.team_id;
-
-      const members = await teamService.getViewMembers(userId, teamId);
+      const members = await teamService.getViewMembers(teamId, req.body.decoded.user)
+      
 
       response.message = "Membros da equipe encontrados!";
       response.data = members;
       response.error = null;
-    } catch (err) {
+      res.status(200).json(response);
+    }catch(err){
       console.log(TAG, "\n", err);
 
       response.message = "Não foi possível encontrar os membros da equipe!";
@@ -273,13 +274,14 @@ export class TeamController {
       error: null,
     };
     try {
-      const teamId = req.body.params.team_id;
-      // const teamId = "ba8aa56e-8666-439e-868d-e54f93adf127"
-      const team = teamService.getOneTeam(teamId, req.body.decoded.team);
-
-      response.message = "Equipe encontrada!";
-      if (team) {
-        response.data = team;
+      
+      const teamId = req.params.team_id;
+      const team = await teamService.getOneTeam(teamId, req.body.decoded.user)
+      
+      response.message = "Equipe encontrada!"
+      
+      if(team){
+        response.data= team
       }
       response.error = null;
       res.status(200).json(response);
