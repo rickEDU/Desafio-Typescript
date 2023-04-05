@@ -1,6 +1,10 @@
 import { TeamService } from "../services/teamService.js";
 import { Response, Request } from "express";
-import { NameValidator, StringValidator } from "../middlewares/validators.js";
+import {
+  NameValidator,
+  StringValidator,
+  UuidValidator,
+} from "../middlewares/validators.js";
 
 import { ITeam, ITeamResponse } from "../interfaces/teamInterfaces.js";
 import {
@@ -32,7 +36,7 @@ export class TeamController {
       const team: ITeam = req.body;
 
       new NameValidator(team.name);
-      new StringValidator(team.leader);
+      new UuidValidator(team.leader);
 
       const serviceResponse = await teamService.createTeam(team);
 
@@ -104,10 +108,14 @@ export class TeamController {
         throw "Don't have permission to alter yourself";
       }
 
-      const team: ITeam = req.body;
+      const team: any = req.body;
 
-      new NameValidator(team.name);
-      new StringValidator(team.leader);
+      if (team.name !== undefined) {
+        new NameValidator(team.name);
+      }
+      if (team.leader !== team.leader) {
+        new UuidValidator(team.leader);
+      }
 
       //não pode alterar si próprio
       if (decoded.user.id === team.leader) {
@@ -116,8 +124,7 @@ export class TeamController {
 
       const serviceResponse = await teamService.updateTeam(
         req.params.team_id,
-        team.name,
-        team.leader
+        team
       );
 
       response.message = "Team updated successfully!";
@@ -206,6 +213,9 @@ export class TeamController {
         throw "Don't have permission to alter yourself";
       }
 
+      new UuidValidator(req.params.user_id);
+      new UuidValidator(req.params.team_id);
+
       const serviceResponse = await teamService.removeMemberTeam(
         req.params.user_id,
         req.params.team_id
@@ -228,24 +238,23 @@ export class TeamController {
     }
   }
 
-  public async getViewMembers(req: Request, res: Response){
+  public async getViewMembers(req: Request, res: Response) {
     const response: ApiResponse<IUserResponse[]> = {
       message: "",
       data: null,
       error: null,
-    }
-    try{
+    };
+    try {
       const { decoded }: any = req.body;
       const userId = decoded.user.id;
       const teamId = req.params.team_id;
-      
-      const members = await teamService.getViewMembers(userId, teamId);  
+
+      const members = await teamService.getViewMembers(userId, teamId);
 
       response.message = "Membros da equipe encontrados!";
       response.data = members;
       response.error = null;
-
-    }catch(err){
+    } catch (err) {
       console.log(TAG, "\n", err);
 
       response.message = "Não foi possível encontrar os membros da equipe!";
@@ -256,24 +265,23 @@ export class TeamController {
       res.json(response);
     }
   }
-  
-  public async getOneTeam(req: Request, res: Response){
+
+  public async getOneTeam(req: Request, res: Response) {
     const response: ApiResponse<any> = {
       message: "",
       data: null,
       error: null,
-    }
+    };
     try {
-      
       const teamId = req.body.params.team_id;
       // const teamId = "ba8aa56e-8666-439e-868d-e54f93adf127"
-      const team = teamService.getOneTeam(teamId, req.body.decoded.team)
-      
-      response.message = "Equipe encontrada!"
-      if(team){
-        response.data= team
+      const team = teamService.getOneTeam(teamId, req.body.decoded.team);
+
+      response.message = "Equipe encontrada!";
+      if (team) {
+        response.data = team;
       }
-      response.error = null
+      response.error = null;
       res.status(200).json(response);
     } catch (err) {
       console.log(TAG, "\n", err);
@@ -286,20 +294,20 @@ export class TeamController {
       res.json(response);
     }
   }
-  public async getAllTeams(req: Request, res: Response){
+  public async getAllTeams(req: Request, res: Response) {
     const response: ApiResponse<ITeam[]> = {
       message: "",
       data: null,
       error: null,
-    }
+    };
     try {
-      const teamId = req.body.decoded
-      const teams = await teamService.getAllTeams(teamId)
-      if(teams){
-        response.data= teams
+      const teamId = req.body.decoded;
+      const teams = await teamService.getAllTeams(teamId);
+      if (teams) {
+        response.data = teams;
       }
-      response.message = "Equipes encontradas!"
-     
+      response.message = "Equipes encontradas!";
+
       res.status(200).json(response);
     } catch (err) {
       console.log(TAG, "\n", err);
