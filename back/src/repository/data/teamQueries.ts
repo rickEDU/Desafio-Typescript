@@ -11,6 +11,10 @@ const getTeam = `
 SELECT * FROM ${teamTable}
 WHERE id= $1;
 `;
+const getTeambyName = `
+SELECT * FROM ${teamTable}
+WHERE name= $1;
+`;
 
 const getLeader = `
 SELECT *
@@ -63,16 +67,16 @@ FROM usuario
 INNER JOIN equipe
 ON usuario.squad = equipe.id;`;
 
-const getAllTeams=`
+const getAllTeams = `
 SELECT *
 FROM public.${teamTable}
-`
+`;
 
 const getOneTeam = `
 SELECT *
 FROM public.${teamTable}
 WHERE id=$1
-`
+`;
 const getViewMembers = `
 SELECT *
 FROM equipe.${teamTable}
@@ -87,6 +91,7 @@ export const teamQuery = {
   getLeaderTeam,
   getOneTeam,
   getAllTeams,
+  getTeambyName,
   getViewMembers,
   deleteTeam,
   insertTeam,

@@ -121,6 +121,9 @@ export class Accountsrepo {
       
       if(userLogin.is_admin){
         const response = await connectDb(query.getUserById, [userID]);
+        if(response.length == 0){
+          throw 'User not found'
+        }
         const data: IResponse ={
           id: response[0].id,
           username: response[0].username,
@@ -131,13 +134,9 @@ export class Accountsrepo {
           is_admin: response[0].is_admin
         }
         return data;
-      }else if(userLogin.squad== null){
-        throw 'Error user is not part of a team';
-      }else if (!userLogin.is_leader){
-          throw 'User is not allowed to access this information';
-        }else{
+      }else{
           const response = await connectDb(query.getUserLeader, [userID]);
-          if(response.length ==0){
+          if(response.length == 0){
             throw 'User not found'
           }
           const data: IResponse ={

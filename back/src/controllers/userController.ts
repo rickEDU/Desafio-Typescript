@@ -5,6 +5,7 @@ import {
   EmailValidator,
   PasswordValidator,
   UsernameValidator,
+  UuidValidator,
 } from "../middlewares/validators.js";
 import {
   ApiResponseData,
@@ -97,7 +98,7 @@ export class AccountsController {
       if (user.is_admin !== undefined && typeof user.is_admin !== "boolean") {
         throw "is_admin must be a boolean.";
       }
-
+      new UuidValidator(req.params.user_id)
       const serviceResponse: IUserResponse = await accountsService.updateUser(
         user,
         req.params.user_id
@@ -130,6 +131,7 @@ export class AccountsController {
 
     try {
       const id_regex: string = req.params.user_id.replace(/ /g, "");
+      new UuidValidator(id_regex)
       const serviceResponse = await accountsService.deleteUser(id_regex);
 
       response.message = "User deleted successfully!";
@@ -155,67 +157,69 @@ export class AccountsController {
       data: null,
       error: null,
     };
-  
-    try {
-          const user_id = req.body.decoded.user.id;
-          const userProfile = await accountsService.getUserId(user_id);
-          response.message = "Perfil OK!";
-          response.data = userProfile;
-      
-          res.status(200).json(response);
 
+    try {
+      const user_id = req.body.decoded.user.id;
+      const userProfile = await accountsService.getUserId(user_id);
+      response.message = "Success";
+      response.data = userProfile;
+
+      res.status(200).json(response);
     } catch (err) {
       console.log(err);
-      response.message = "Erro 123";
+      response.message = "Error";
       response.error = err;
-  
+
       res.status(400).json(response);
     }
   }
 
-
-  public async getAllUsers(req: Request ,res:Response) {
+  public async getAllUsers(req: Request, res: Response) {
     const response: ApiResponse<IUser[]> = {
       message: "",
       data: null,
       error: null,
     };
-    
-  try { 
-    const serviceResponse = await accountsService.getAllUsers();
-    response.message = "Lista de usuários encontrada!";
-    response.data = serviceResponse;
-    res.status(200).json(response)
-  }catch (err) {
-    console.log(err);
-    response.message = "Erro 123";
-    response.error = err;
 
-    res.status(400).json(response);
-  }
-  }
-  
-public async getOneUser(req: Request ,res:Response){
-  const response: ApiResponse<IResponse> = {
-    message: "",
-    data: null,
-    error: null,
-  };
-  try{
-    const userID = req.params.user_id;
-    const user = await accountsService.getOneUser(userID,req.body.decoded.user);
-    
-    response.message = "Sucess";
-    response.data = user
-    res.status(200).json(response);
-  }catch (err) {
-    console.log(err);
-    response.message = "Erro 123";
-    response.error = err;
+    try {
+      const serviceResponse = await accountsService.getAllUsers();
+      response.message = "Success";
+      response.data = serviceResponse;
+      res.status(200).json(response);
+    } catch (err) {
+      console.log(err);
+      response.message = "Error";
+      response.error = err;
 
-    res.status(400).json(response);
+      res.status(400).json(response);
+    }
   }
-}
+
+  public async getOneUser(req: Request, res: Response) {
+    const response: ApiResponse<IResponse> = {
+      message: "",
+      data: null,
+      error: null,
+    };
+    try {
+      const userID = req.params.user_id;
+      new UuidValidator(userID)
+      const user = await accountsService.getOneUser(
+        userID,
+        req.body.decoded.user
+      );
+
+      response.message = "Success";
+      response.data = user;
+      res.status(200).json(response);
+    } catch (err) {
+      console.log(err);
+      response.message = "Error";
+      response.error = err;
+
+      res.status(400).json(response);
+    }
+  }
 }
 
 export class LoginController {
@@ -228,7 +232,7 @@ export class LoginController {
 
     try {
       const { username, password } = req.body;
-      new NameValidator(username);
+      new UsernameValidator(username);
       new PasswordValidator(password);
 
       const responseLogin = await loginService.LoginUser(username, password);
@@ -239,7 +243,7 @@ export class LoginController {
 
       const jwt_cookie: string = jwt.sign({ user: responseLogin }, secretKey);
       res.cookie("session", jwt_cookie);
-      response.message = "Sucess";
+      response.message = "Success";
       response.data = responseLogin;
       return res.status(200).json(response);
     } catch (error: any) {

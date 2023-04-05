@@ -77,25 +77,43 @@ export class TeamRepo {
     }
   }
 
-  public async updateTeam(
-    teamId: string,
-    teamName: string,
-    teamLeaderId: UUID
-  ) {
+  public async updateTeam(teamId: string, team: any) {
     try {
-      // Tem que consertar a query para não retornar o password
-      const newLeader: Array<IUser> = await connectDb(query.getUserById, [
-        teamLeaderId,
+      //verify if
+      const teamDB: Array<ITeamResponse> = await connectDb(teamQuery.getTeam, [
+        teamId,
       ]);
-
-      //membros de outras equipes não podem ser líderes
-      if (newLeader[0].squad !== teamId) {
-        throw "The new leader must be a member of the team";
+      if (teamDB.length === 0) {
+        throw "Team not found.";
       }
+      //Verifica se o name passado pela requisição já está sendo usado por outro cadastro.
+      if (team.name !== undefined && team.name !== teamDB[0].name) {
+        const verifyName: IUser[] = await connectDb(teamQuery.getTeambyName, [
+          team.name,
+        ]);
+        if (verifyName.length !== 0) {
+          throw "This team name is already being used.";
+        }
+      }
+
+      if (team.leader !== undefined) {
+        const newLeader: Array<IUser> = await connectDb(query.getUserById, [
+          team.leader,
+        ]);
+
+        //membros de outras equipes não podem ser líderes
+        if (newLeader[0].squad !== teamId) {
+          throw "The new leader must be a member of the team";
+        }
+      }
+
+      console.log(teamDB[0], "teamDB");
+      console.log(team, "team");
+      Object.assign(teamDB[0], team);
 
       const response: Array<ITeamResponse> = await connectDb(
         teamQuery.updateTeam,
-        [teamId, teamName, teamLeaderId]
+        [teamId, teamDB[0].name, teamDB[0].leader]
       );
 
       const data: ITeamResponse = response[0];
@@ -147,8 +165,8 @@ export class TeamRepo {
     }
   }
 
-  public async getAllTeams(user: any){
-    try{
+  public async getAllTeams(user: any) {
+    try {
       let teams: ITeam[] = [];
         teams = await connectDb(teamQuery.getAllTeams, []);
         if(user.is_admin){
