@@ -126,11 +126,7 @@ export class Accountsrepo {
           is_admin: response[0].is_admin
         }
         return data;
-      }else if(userLogin.squad== null){
-        throw 'Error user is not part of a team';
-      }else if (!userLogin.is_leader){
-          throw 'User is not allowed to access this information';
-        }else{
+      }else{
           const response = await connectDb(query.getUserLeader, [userID]);
           if(response.length ==0){
             throw 'User not found'
