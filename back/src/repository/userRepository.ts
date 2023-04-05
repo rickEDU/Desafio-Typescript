@@ -70,7 +70,7 @@ export class Accountsrepo {
       }
       //Impede um Administrador "demotar" outro ou ele mesmo para um usuário comum.
       if (usuarioDB[0].is_admin && user.is_admin == false) {
-        throw "This column cannot be changed";
+        throw "Column is_admin cannot be changed";
       }
 
       Object.assign(usuarioDB[0], user);
