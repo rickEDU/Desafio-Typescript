@@ -5,6 +5,7 @@ import {
   EmailValidator,
   PasswordValidator,
   UsernameValidator,
+  UuidValidator,
 } from "../middlewares/validators.js";
 import {
   ApiResponseData,
@@ -97,7 +98,7 @@ export class AccountsController {
       if (user.is_admin !== undefined && typeof user.is_admin !== "boolean") {
         throw "is_admin must be a boolean.";
       }
-
+      new UuidValidator(req.params.user_id)
       const serviceResponse: IUserResponse = await accountsService.updateUser(
         user,
         req.params.user_id
@@ -130,6 +131,7 @@ export class AccountsController {
 
     try {
       const id_regex: string = req.params.user_id.replace(/ /g, "");
+      new UuidValidator(id_regex)
       const serviceResponse = await accountsService.deleteUser(id_regex);
 
       response.message = "User deleted successfully!";
@@ -229,7 +231,7 @@ export class LoginController {
 
     try {
       const { username, password } = req.body;
-      new NameValidator(username);
+      new UsernameValidator(username);
       new PasswordValidator(password);
 
       const responseLogin = await loginService.LoginUser(username, password);
