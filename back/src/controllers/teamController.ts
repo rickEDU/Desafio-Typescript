@@ -3,6 +3,7 @@ import { Response, Request } from "express";
 import {
   NameValidator,
   StringValidator,
+  TeamNameValidator,
   UuidValidator,
 } from "../middlewares/validators.js";
 
@@ -35,7 +36,7 @@ export class TeamController {
       }
       const team: ITeam = req.body;
 
-      new NameValidator(team.name);
+      new TeamNameValidator(team.name);
       new UuidValidator(team.leader);
 
       const serviceResponse = await teamService.createTeam(team);
@@ -65,7 +66,7 @@ export class TeamController {
     };
 
     try {
-      new UuidValidator(req.params.team_id)
+      new UuidValidator(req.params.team_id);
 
       const serviceResponse = await teamService.deleteTeam(req.params.team_id);
 
@@ -113,7 +114,7 @@ export class TeamController {
       const team: any = req.body;
 
       if (team.name !== undefined) {
-        new NameValidator(team.name);
+        new TeamNameValidator(team.name);
       }
       if (team.leader !== team.leader) {
         new UuidValidator(team.leader);
@@ -169,8 +170,8 @@ export class TeamController {
       if (decoded.user.id === req.params.user_id) {
         throw "Don't have permission to alter yourself";
       }
-      new UuidValidator(req.params.user_id)
-      new UuidValidator(req.params.team_id)
+      new UuidValidator(req.params.user_id);
+      new UuidValidator(req.params.team_id);
       const serviceResponse = await teamService.addMemberTeam(
         req.params.user_id,
         req.params.team_id
@@ -251,14 +252,16 @@ export class TeamController {
       const { decoded }: any = req.body;
       const userId = decoded.user.id;
       const teamId = req.params.team_id;
-      const members = await teamService.getViewMembers(teamId, req.body.decoded.user)
-      
+      const members = await teamService.getViewMembers(
+        teamId,
+        req.body.decoded.user
+      );
 
       response.message = "Membros da equipe encontrados!";
       response.data = members;
       response.error = null;
       res.status(200).json(response);
-    }catch(err){
+    } catch (err) {
       console.log(TAG, "\n", err);
 
       response.message = "Não foi possível encontrar os membros da equipe!";
@@ -277,14 +280,13 @@ export class TeamController {
       error: null,
     };
     try {
-      
       const teamId = req.params.team_id;
-      const team = await teamService.getOneTeam(teamId, req.body.decoded.user)
-      
-      response.message = "Equipe encontrada!"
-      
-      if(team){
-        response.data= team
+      const team = await teamService.getOneTeam(teamId, req.body.decoded.user);
+
+      response.message = "Equipe encontrada!";
+
+      if (team) {
+        response.data = team;
       }
       response.error = null;
       res.status(200).json(response);
