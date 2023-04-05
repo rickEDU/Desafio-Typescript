@@ -65,6 +65,8 @@ export class TeamController {
     };
 
     try {
+      new UuidValidator(req.params.team_id)
+
       const serviceResponse = await teamService.deleteTeam(req.params.team_id);
 
       response.message = "Team deleted successfully!";
@@ -167,7 +169,8 @@ export class TeamController {
       if (decoded.user.id === req.params.user_id) {
         throw "Don't have permission to alter yourself";
       }
-
+      new UuidValidator(req.params.user_id)
+      new UuidValidator(req.params.team_id)
       const serviceResponse = await teamService.addMemberTeam(
         req.params.user_id,
         req.params.team_id
