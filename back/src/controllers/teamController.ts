@@ -27,7 +27,7 @@ export class TeamController {
       const decoded: IDecode<IUserResponse> = body.decoded;
 
       if (!decoded.user.is_admin) {
-        throw "Error: não é um Administrador";
+        throw "Error: not an Admin";
       }
       const team: ITeam = req.body;
 
@@ -36,7 +36,7 @@ export class TeamController {
 
       const serviceResponse = await teamService.createTeam(team);
 
-      response.message = "Equipe criada com sucesso!";
+      response.message = "Team created successfully!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -44,7 +44,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível criar a Equipe!";
+      response.message = "Unable to create the team!";
       response.data = null;
       response.error = error;
 
@@ -63,7 +63,7 @@ export class TeamController {
     try {
       const serviceResponse = await teamService.deleteTeam(req.params.team_id);
 
-      response.message = "Equipe deletada com sucesso!";
+      response.message = "Team deleted successfully!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -71,7 +71,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível deletar o time!";
+      response.message = "Unable to delete team!";
       response.data = null;
       response.error = error;
 
@@ -81,8 +81,6 @@ export class TeamController {
   }
 
   public async updateTeam(req: Request, res: Response) {
-    // Padronizar a resposta
-
     const response: ApiResponse<ITeamResponse> = {
       message: "",
       data: null,
@@ -94,10 +92,16 @@ export class TeamController {
       const decoded: IDecode<IUserResponse> = body.decoded;
 
       if (
-        decoded.user.id === undefined ||
-        decoded.user.is_admin === undefined
+        !(
+          decoded.user.is_leader && decoded.user.squad === req.params.team_id
+        ) &&
+        decoded.user.is_admin === false
       ) {
-        throw "Usuário não logado";
+        throw "Not an informed team leader or admin";
+      }
+
+      if (decoded.user.id === req.params.user_id) {
+        throw "Don't have permission to alter yourself";
       }
 
       const team: ITeam = req.body;
@@ -107,18 +111,16 @@ export class TeamController {
 
       //não pode alterar si próprio
       if (decoded.user.id === team.leader) {
-        throw "Não tem permissão para alterar a si próprio";
+        throw "Don't have permission to alter yourself";
       }
 
       const serviceResponse = await teamService.updateTeam(
-        decoded.user.id,
-        decoded.user.is_admin,
         req.params.team_id,
         team.name,
         team.leader
       );
 
-      response.message = "Time atualizado com sucesso!";
+      response.message = "Team updated successfully!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -126,7 +128,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível atualizar o time!";
+      response.message = "Unable to update team!";
       response.data = null;
       response.error = error;
 
@@ -156,7 +158,7 @@ export class TeamController {
       }
 
       if (decoded.user.id === req.params.user_id) {
-        throw "Não tem permissão para alterar a si próprio";
+        throw "Don't have permission to alter yourself";
       }
 
       const serviceResponse = await teamService.addMemberTeam(
@@ -164,7 +166,7 @@ export class TeamController {
         req.params.team_id
       );
 
-      response.message = "Usuário adicionado à equipe com sucesso!";
+      response.message = "User added to team successfully!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -172,7 +174,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível adicionar o usuário à equipe!";
+      response.message = "Unable to add user to team!";
       response.data = null;
       response.error = error;
 
@@ -192,20 +194,24 @@ export class TeamController {
       const decoded: IDecode<IUserResponse> = body.decoded;
 
       if (
-        decoded.user.id === undefined ||
-        decoded.user.is_admin === undefined
+        !(
+          decoded.user.is_leader && decoded.user.squad === req.params.team_id
+        ) &&
+        decoded.user.is_admin === false
       ) {
-        throw "Usuário não logado";
+        throw "Not an informed team leader or admin";
+      }
+
+      if (decoded.user.id === req.params.user_id) {
+        throw "Don't have permission to alter yourself";
       }
 
       const serviceResponse = await teamService.removeMemberTeam(
-        decoded.user.id,
-        decoded.user.is_admin,
         req.params.user_id,
         req.params.team_id
       );
 
-      response.message = "Usuário removido do time com sucesso!";
+      response.message = "User successfully removed from the team!";
       response.data = serviceResponse;
       response.error = null;
 
@@ -213,7 +219,7 @@ export class TeamController {
     } catch (error) {
       console.log(TAG, "\n", error);
 
-      response.message = "Não foi possível remover o usuário do time!";
+      response.message = "Unable to remove user from team!";
       response.data = null;
       response.error = error;
 

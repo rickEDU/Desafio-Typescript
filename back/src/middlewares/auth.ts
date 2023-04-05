@@ -67,7 +67,7 @@ export default class auth {
         req.body.decoded.user.id !== req.params.user_id &&
         !req.body.decoded.user.is_admin
       ) {
-        throw "Error: Esse usuário não tem permissão de alterar o cadastro de outro usuário";
+        throw "Error: That user is not permission of alter register from outer user";
       } else {
         next();
       }

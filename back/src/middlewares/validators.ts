@@ -8,7 +8,7 @@ class Validator {
 
 export class StringValidator extends Validator {
   constructor(data: string) {
-    if (typeof data !== "string") throw "O input deve ser uma string";
+    if (typeof data !== "string") throw "Input must be a string";
     else super(data);
   }
 }
@@ -16,7 +16,7 @@ export class StringValidator extends Validator {
 abstract class RegexValidator extends StringValidator {
   protected _regex: RegExp = new RegExp("");
 
-  constructor(data: string, message:string) {
+  constructor(data: string, message: string) {
     super(data);
     if (!this.regex.test(data)) throw message;
   }
@@ -29,7 +29,7 @@ abstract class RegexValidator extends StringValidator {
 
 export class EmailValidator extends RegexValidator {
   constructor(data: string) {
-    super(data, 'Error: email inválido.');
+    super(data, "Error: invalid email.");
   }
 
   protected get regex(): RegExp {
@@ -39,7 +39,7 @@ export class EmailValidator extends RegexValidator {
 
 export class PasswordValidator extends RegexValidator {
   constructor(data: string) {
-    super(data,'Error: Password inválido.');
+    super(data, "Error: invalid password.");
   }
 
   protected get regex(): RegExp {
@@ -48,7 +48,7 @@ export class PasswordValidator extends RegexValidator {
 }
 export class NameValidator extends RegexValidator {
   constructor(data: string) {
-    super(data, 'Error: Name inválido.');
+    super(data, "Error: invalid name.");
   }
 
   protected get regex(): RegExp {
@@ -58,7 +58,7 @@ export class NameValidator extends RegexValidator {
 
 export class UsernameValidator extends RegexValidator {
   constructor(data: string) {
-    super(data, 'Error: Username inválido.');
+    super(data, "Error: invalid username.");
   }
 
   protected get regex(): RegExp {

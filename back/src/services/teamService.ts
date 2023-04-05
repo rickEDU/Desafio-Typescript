@@ -29,8 +29,6 @@ export class TeamService {
   }
 
   public async updateTeam(
-    userLogin: UUID,
-    userIsAdmin: boolean,
     teamId: string,
     teamName: string,
     teamLeaderId: UUID
@@ -38,8 +36,6 @@ export class TeamService {
     try {
       //consertar os tipos da resposta dbResponse
       const dbResponse = await teamRepo.updateTeam(
-        userLogin,
-        userIsAdmin,
         teamId,
         teamName,
         teamLeaderId
@@ -62,20 +58,10 @@ export class TeamService {
     }
   }
 
-  public async removeMemberTeam(
-    userLogin: string,
-    userIsAdmin: boolean,
-    userId: string,
-    teamId: string
-  ) {
+  public async removeMemberTeam(userId: string, teamId: string) {
     try {
       //consertar os tipos da resposta dbResponse
-      const dbResponse = await teamRepo.removeMemberTeam(
-        userLogin,
-        userIsAdmin,
-        userId,
-        teamId
-      );
+      const dbResponse = await teamRepo.removeMemberTeam(userId, teamId);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");

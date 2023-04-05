@@ -24,7 +24,7 @@ export class Accountsrepo {
         user.username,
       ]);
       if (userVerify.length !== 0) {
-        throw "Usuário já cadastrado";
+        throw "User is already registered";
       }
 
       const response = await connectDb(query.insertUser, [
@@ -49,23 +49,28 @@ export class Accountsrepo {
       // Verificando se já está cadastrado no banco de dados
       const usuarioDB: Array<IUser> = await connectDb(query.getUserById, [id]);
       if (usuarioDB.length === 0) {
-        throw "Usuário não encontrado";
+        throw "User not found.";
       }
       //Verifica se o username passado pela requisição já está sendo usado por outro cadastro.
-      if(user.username !== undefined && user.username !== usuarioDB[0].username ){
-        const verifyUsername : IUser[] = await connectDb(query.getUser, [user.username])
-        if(verifyUsername.length !==0){
-          throw 'Esse username já está sendo usado.'
+      if (
+        user.username !== undefined &&
+        user.username !== usuarioDB[0].username
+      ) {
+        const verifyUsername: IUser[] = await connectDb(query.getUser, [
+          user.username,
+        ]);
+        if (verifyUsername.length !== 0) {
+          throw "This username is already being used.";
         }
       }
       // Verifica se o usuário que o autor quer fazer update faz parte de uma equipe
       // e se o autor está tentando transformar o cadastro em administrador
       if (usuarioDB[0].squad !== null && user.is_admin == true) {
-        throw "Esse usuário faz parte de uma equipe, logo não pode se tornar administrador";
+        throw "This user is part of a team, so he cannot become an admin.";
       }
       //Impede um Administrador "demotar" outro ou ele mesmo para um usuário comum.
       if (usuarioDB[0].is_admin && user.is_admin == false) {
-        throw "Essa coluna não pode ser alterada";
+        throw "This column cannot be changed";
       }
 
       Object.assign(usuarioDB[0], user);
@@ -165,13 +170,13 @@ export class Accountsrepo {
         [id]
       );
       if (userVerifyLeader.length !== 0) {
-        throw "Usuário é lider de uma equipe";
+        throw "This User is a team leader";
       }
       const response: Array<IUserResponse> = await connectDb(query.deleteUser, [
         id,
       ]);
       if (response.length === 0) {
-        throw "Usuário não encontrado";
+        throw "User not found";
       }
       const data: IUserResponse = response[0];
       return data;
@@ -186,7 +191,7 @@ export class Accountsrepo {
       // Verificando se já está cadastrado no banco de dados
       const user: Array<ILogin> = await connectDb(query.getLogin, [username]);
       if (user.length === 0) {
-        throw "Usuário não está cadastrado";
+        throw "User not found";
       }
 
       return user[0];
