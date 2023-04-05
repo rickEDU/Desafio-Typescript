@@ -75,12 +75,8 @@ WHERE id=$1
 `
 const getViewMembers = `
 SELECT *
-FROM public.${teamTable}
-WHERE id_equipe = {id_equipe} AND (
-      id_usuario = {id_usuario} OR 
-      id_usuario = (SELECT id_lider_equipe FROM equipes WHERE id_equipe = {id_equipe}) OR 
-      {funcao} = 'Administrador'
-)`
+FROM equipe.${teamTable}
+WHERE id=$1`
 
 
 // Objeto com todas as constantes.

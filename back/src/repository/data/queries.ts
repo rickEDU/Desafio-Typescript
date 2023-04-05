@@ -94,6 +94,12 @@ SELECT *
 FROM public.${tableUsers}
 `;
 
+const getAllUserMembers=`
+SELECT * 
+FROM public.${tableUsers}
+WHERE squad = $1;
+`;
+
 // Objeto com todas as constantes.
 export const query = {
   getUsers,
@@ -108,4 +114,5 @@ export const query = {
   getLogin,
   getAllUsers,
   getUserLeader,
+  getAllUserMembers,
 };
