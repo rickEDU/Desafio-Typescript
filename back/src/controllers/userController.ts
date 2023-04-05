@@ -157,16 +157,16 @@ export class AccountsController {
     };
   
     try {
-          const user_id = req.body.decoded.user.id;
-          const userProfile = await accountsService.getUserId(user_id);
-          response.message = "Perfil OK!";
-          response.data = userProfile;
-      
-          res.status(200).json(response);
+      const user_id = req.body.decoded.user.id;
+      const userProfile = await accountsService.getUserId(user_id);
+      response.message = "Success";
+      response.data = userProfile;
+  
+      res.status(200).json(response);
 
     } catch (err) {
       console.log(err);
-      response.message = "Erro 123";
+      response.message = "Error";
       response.error = err;
   
       res.status(400).json(response);
@@ -183,12 +183,12 @@ export class AccountsController {
     
   try { 
     const serviceResponse = await accountsService.getAllUsers();
-    response.message = "Lista de usuários encontrada!";
+    response.message = "Success";
     response.data = serviceResponse;
     res.status(200).json(response)
   }catch (err) {
     console.log(err);
-    response.message = "Erro 123";
+    response.message = "Error";
     response.error = err;
 
     res.status(400).json(response);
@@ -205,12 +205,12 @@ public async getOneUser(req: Request ,res:Response){
     const userID = req.params.user_id;
     const user = await accountsService.getOneUser(userID,req.body.decoded.user);
     
-    response.message = "Sucess";
+    response.message = "Success";
     response.data = user
     res.status(200).json(response);
   }catch (err) {
     console.log(err);
-    response.message = "Erro 123";
+    response.message = "Error";
     response.error = err;
 
     res.status(400).json(response);
@@ -239,7 +239,7 @@ export class LoginController {
 
       const jwt_cookie: string = jwt.sign({ user: responseLogin }, secretKey);
       res.cookie("session", jwt_cookie);
-      response.message = "Sucess";
+      response.message = "Success";
       response.data = responseLogin;
       return res.status(200).json(response);
     } catch (error: any) {
