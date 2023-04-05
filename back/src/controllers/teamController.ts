@@ -3,6 +3,7 @@ import { Response, Request } from "express";
 import {
   NameValidator,
   StringValidator,
+  TeamNameValidator,
   UuidValidator,
 } from "../middlewares/validators.js";
 
@@ -35,7 +36,7 @@ export class TeamController {
       }
       const team: ITeam = req.body;
 
-      new NameValidator(team.name);
+      new TeamNameValidator(team.name);
       new UuidValidator(team.leader);
 
       const serviceResponse = await teamService.createTeam(team);
@@ -113,7 +114,7 @@ export class TeamController {
       const team: any = req.body;
 
       if (team.name !== undefined) {
-        new NameValidator(team.name);
+        new TeamNameValidator(team.name);
       }
       if (team.leader !== team.leader) {
         new UuidValidator(team.leader);

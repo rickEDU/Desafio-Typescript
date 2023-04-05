@@ -152,6 +152,19 @@ export class TeamRepo {
 
   public async removeMemberTeam(userId: string, teamId: string) {
     try {
+      const userIsMember: Array<IUser> = await connectDb(query.getUserById, [
+        userId,
+      ]);
+      if (userIsMember[0].squad !== teamId) {
+        throw "User doesn't belong to the team";
+      }
+
+      const getDB: Array<ITeamResponse> = await connectDb(teamQuery.getTeam, [
+        teamId,
+      ]);
+      if (getDB[0].leader == userId) {
+        throw "Can't remove the leader";
+      }
       const response: Array<IUserResponse> = await connectDb(
         query.updateUserSquad,
         [userId, null]
@@ -168,67 +181,67 @@ export class TeamRepo {
   public async getAllTeams(user: any) {
     try {
       let teams: ITeam[] = [];
-        teams = await connectDb(teamQuery.getAllTeams, []);
-        if(user.is_admin){
+      teams = await connectDb(teamQuery.getAllTeams, []);
+      if (user.is_admin) {
+        return teams;
+      } else {
+        const response2 = await connectDb(teamQuery.getLeader, [user.id]);
+        if (response2.length != 0) {
           return teams;
-        }else{
-          const response2 = await connectDb(teamQuery.getLeader, [user.id]);
-          if(response2.length != 0){
-            return teams;
-          }else{
-            throw 'Error usuário não tem permissão!';
-          }
-        }
-
-    } catch (error) {
-      console.log(TAG, "error caught at getAllTeams()");
-      throw error;
-    }
-  }
-  
-  public async getOneTeam(teamId: string, object1: any){
-    try{
-      if(object1.is_admin){
-        const response1 = await connectDb(teamQuery.getOneTeam, [teamId]);
-        return response1[0];
-      }else if(object1.squad== null){
-        console.log(object1.squad);
-        throw 'Error usuário não faz parte de uma equipe';
-      }else{
-        const response2 = await connectDb(teamQuery.getLeader, [object1.id]);
-        if(response2.length != 0){
-          const response = await connectDb(teamQuery.getOneTeam, [teamId]);
-          if (response.length === 0) {
-            throw 'Erro ao acessar essa informação';
-          }
-          return response[0];
-        }else if(teamId == object1.squad){
-          const response3 = await connectDb(teamQuery.getOneTeam, [teamId]);
-          return response3[0];
-        }else{
-          throw 'Error usuário não tem permissão!';
+        } else {
+          throw "Error usuário não tem permissão!";
         }
       }
-
     } catch (error) {
       console.log(TAG, "error caught at getAllTeams()");
       throw error;
     }
   }
-  
-  public async getViewMembers(teamId: any, object1: any){
-    try{
-      const teams: IUserResponse[] = await connectDb(query.getAllUserMembers, [teamId]);
-      if(object1.is_admin){
-        return teams;
-      }else if(object1.squad== null){
-        throw 'Error usuário não faz parte de uma equipe';
-      }else{
+
+  public async getOneTeam(teamId: string, object1: any) {
+    try {
+      if (object1.is_admin) {
+        const response1 = await connectDb(teamQuery.getOneTeam, [teamId]);
+        return response1[0];
+      } else if (object1.squad == null) {
+        console.log(object1.squad);
+        throw "Error usuário não faz parte de uma equipe";
+      } else {
         const response2 = await connectDb(teamQuery.getLeader, [object1.id]);
-        if(teamId == object1.squad){
+        if (response2.length != 0) {
+          const response = await connectDb(teamQuery.getOneTeam, [teamId]);
+          if (response.length === 0) {
+            throw "Erro ao acessar essa informação";
+          }
+          return response[0];
+        } else if (teamId == object1.squad) {
+          const response3 = await connectDb(teamQuery.getOneTeam, [teamId]);
+          return response3[0];
+        } else {
+          throw "Error usuário não tem permissão!";
+        }
+      }
+    } catch (error) {
+      console.log(TAG, "error caught at getAllTeams()");
+      throw error;
+    }
+  }
+
+  public async getViewMembers(teamId: any, object1: any) {
+    try {
+      const teams: IUserResponse[] = await connectDb(query.getAllUserMembers, [
+        teamId,
+      ]);
+      if (object1.is_admin) {
+        return teams;
+      } else if (object1.squad == null) {
+        throw "Error usuário não faz parte de uma equipe";
+      } else {
+        const response2 = await connectDb(teamQuery.getLeader, [object1.id]);
+        if (teamId == object1.squad) {
           return teams;
-        }else{
-          throw 'Error usuário não tem permissão!';
+        } else {
+          throw "Error usuário não tem permissão!";
         }
       }
     } catch (error) {
