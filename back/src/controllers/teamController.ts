@@ -293,8 +293,7 @@ export class TeamController {
       error: null,
     }
     try {
-      const teamId = req.body.decoded
-      const teams = await teamService.getAllTeams(teamId)
+      const teams = await teamService.getAllTeams(req.body.decoded.user)
       if(teams){
         response.data= teams
       }

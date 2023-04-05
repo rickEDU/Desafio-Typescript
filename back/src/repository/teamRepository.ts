@@ -151,7 +151,17 @@ export class TeamRepo {
     try{
       let teams: ITeam[] = [];
         teams = await connectDb(teamQuery.getAllTeams, []);
-      return teams;
+        if(user.is_admin){
+          return teams;
+        }else{
+          const response2 = await connectDb(teamQuery.getLeader, [user.id]);
+          if(response2.length != 0){
+            return teams;
+          }else{
+            throw 'Error usuário não tem permissão!';
+          }
+        }
+
     } catch (error) {
       console.log(TAG, "error caught at getAllTeams()");
       throw error;
