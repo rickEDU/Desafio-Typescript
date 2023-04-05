@@ -168,37 +168,69 @@ export class TeamRepo {
   public async getAllTeams(user: any) {
     try {
       let teams: ITeam[] = [];
-      teams = await connectDb(teamQuery.getAllTeams, []);
-      return teams;
+        teams = await connectDb(teamQuery.getAllTeams, []);
+        if(user.is_admin){
+          return teams;
+        }else{
+          const response2 = await connectDb(teamQuery.getLeader, [user.id]);
+          if(response2.length != 0){
+            return teams;
+          }else{
+            throw 'Error usuário não tem permissão!';
+          }
+        }
+
     } catch (error) {
       console.log(TAG, "error caught at getAllTeams()");
       throw error;
     }
   }
-
-  public async getOneTeam(teamId: string, team_Object: any) {
-    try {
-      console.log("time", teamId);
-      const teams = await connectDb(teamQuery.getOneTeam, [teamId]);
-      if (teams.length === 0) {
-        return null;
+  
+  public async getOneTeam(teamId: string, object1: any){
+    try{
+      if(object1.is_admin){
+        const response1 = await connectDb(teamQuery.getOneTeam, [teamId]);
+        return response1[0];
+      }else if(object1.squad== null){
+        console.log(object1.squad);
+        throw 'Error usuário não faz parte de uma equipe';
+      }else{
+        const response2 = await connectDb(teamQuery.getLeader, [object1.id]);
+        if(response2.length != 0){
+          const response = await connectDb(teamQuery.getOneTeam, [teamId]);
+          if (response.length === 0) {
+            throw 'Erro ao acessar essa informação';
+          }
+          return response[0];
+        }else if(teamId == object1.squad){
+          const response3 = await connectDb(teamQuery.getOneTeam, [teamId]);
+          return response3[0];
+        }else{
+          throw 'Error usuário não tem permissão!';
+        }
       }
-      return teams;
+
     } catch (error) {
       console.log(TAG, "error caught at getAllTeams()");
       throw error;
     }
   }
-
-  public async getViewMembers(teamId: string) {
-    try {
-      const teams: IUserResponse[] = await connectDb(teamQuery.getViewMembers, [
-        teamId,
-      ]);
-      if (teams.length === 0) {
-        throw "O time Não está cadastrado!";
+  
+  public async getViewMembers(teamId: any, object1: any){
+    try{
+      const teams: IUserResponse[] = await connectDb(query.getAllUserMembers, [teamId]);
+      if(object1.is_admin){
+        return teams;
+      }else if(object1.squad== null){
+        throw 'Error usuário não faz parte de uma equipe';
+      }else{
+        const response2 = await connectDb(teamQuery.getLeader, [object1.id]);
+        if(teamId == object1.squad){
+          return teams;
+        }else{
+          throw 'Error usuário não tem permissão!';
+        }
       }
-      return teams;
     } catch (error) {
       console.log(TAG, "error caught at getAllTeams()");
       throw error;
