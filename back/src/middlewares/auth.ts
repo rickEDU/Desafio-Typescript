@@ -25,7 +25,7 @@ export default class auth {
       console.log(TAG, e);
       res
         .status(400)
-        .json({ message: "Error", code: 400, data: null, error: e });
+        .json({ message: "Error", data: null, error: e });
     }
   }
 
@@ -42,7 +42,7 @@ export default class auth {
       console.log(TAGIsadmin, e);
       res
         .status(400)
-        .json({ message: "Error", code: 400, data: null, error: e });
+        .json({ message: "Error", data: null, error: e });
     }
   }
 
@@ -56,7 +56,7 @@ export default class auth {
       console.log(TAGIsAdminOrLeader, e);
       res
         .status(400)
-        .json({ message: "Error", code: 400, data: null, error: e });
+        .json({ message: "Error", data: null, error: e });
     }
   }
 

@@ -159,13 +159,13 @@ export class AccountsController {
     try {
       const user_id = req.body.decoded.user.id;
       const userProfile = await accountsService.getUserId(user_id);
-      response.message = "Perfil OK!";
+      response.message = "Success";
       response.data = userProfile;
 
       res.status(200).json(response);
     } catch (err) {
       console.log(err);
-      response.message = "Erro 123";
+      response.message = "Error";
       response.error = err;
 
       res.status(400).json(response);
@@ -181,12 +181,12 @@ export class AccountsController {
 
     try {
       const serviceResponse = await accountsService.getAllUsers();
-      response.message = "Lista de usuários encontrada!";
+      response.message = "Success";
       response.data = serviceResponse;
       res.status(200).json(response);
     } catch (err) {
       console.log(err);
-      response.message = "Erro 123";
+      response.message = "Error";
       response.error = err;
 
       res.status(400).json(response);
@@ -211,7 +211,7 @@ export class AccountsController {
       res.status(200).json(response);
     } catch (err) {
       console.log(err);
-      response.message = "Erro 123";
+      response.message = "Error";
       response.error = err;
 
       res.status(400).json(response);
