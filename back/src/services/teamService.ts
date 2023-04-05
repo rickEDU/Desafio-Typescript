@@ -28,18 +28,24 @@ export class TeamService {
     }
   }
 
-  public async updateTeam(
-    teamId: string,
-    teamName: string,
-    teamLeaderId: UUID
-  ) {
+  public async updateTeam(teamId: string, team: any) {
     try {
       //consertar os tipos da resposta dbResponse
-      const dbResponse = await teamRepo.updateTeam(
-        teamId,
-        teamName,
-        teamLeaderId
-      );
+      const data: any = {};
+      console.log(team, "teamsvc");
+
+      for (let key in team) {
+        if (key === "name" || key === "leader") {
+          data[key] = team[key];
+        }
+        continue;
+      }
+
+      if (Object.keys(data).length == 0) {
+        throw "The request has no body";
+      }
+
+      const dbResponse = await teamRepo.updateTeam(teamId, data);
       return dbResponse;
     } catch (error) {
       console.log(TAG, "error caught at");
@@ -93,7 +99,7 @@ export class TeamService {
       return members;
     } catch (error) {
       console.log(TAG, "Não foi Possivel encontrar a equipe!");
-      throw error
+      throw error;
     }
   }
 }

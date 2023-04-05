@@ -65,3 +65,12 @@ export class UsernameValidator extends RegexValidator {
     return /^[a-z]{1,}$/gim;
   }
 }
+export class UuidValidator extends RegexValidator {
+  constructor(data: string) {
+    super(data, "Error: invalid uuid.");
+  }
+
+  protected get regex(): RegExp {
+    return /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[1-5][a-fA-F0-9]{3}-[89aAbB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}$/;
+  }
+}
