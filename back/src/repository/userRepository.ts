@@ -121,6 +121,9 @@ export class Accountsrepo {
       
       if(userLogin.is_admin){
         const response = await connectDb(query.getUserById, [userID]);
+        if(response.length == 0){
+          throw 'User not found'
+        }
         const data: IResponse ={
           id: response[0].id,
           username: response[0].username,
@@ -133,7 +136,7 @@ export class Accountsrepo {
         return data;
       }else{
           const response = await connectDb(query.getUserLeader, [userID]);
-          if(response.length ==0){
+          if(response.length == 0){
             throw 'User not found'
           }
           const data: IResponse ={

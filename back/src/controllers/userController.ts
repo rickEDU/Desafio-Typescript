@@ -203,6 +203,7 @@ export class AccountsController {
     };
     try {
       const userID = req.params.user_id;
+      new UuidValidator(userID)
       const user = await accountsService.getOneUser(
         userID,
         req.body.decoded.user
