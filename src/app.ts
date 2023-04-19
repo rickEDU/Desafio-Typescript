@@ -1,8 +1,8 @@
 import express, { urlencoded, static as serveStatic } from "express";
 import { route } from "./routes/router.js";
 import cookieParser from "cookie-parser";
+import cors from 'cors';
 
-// import cors from "cors";
 
 export class App {
   public server: express.Application;
@@ -14,6 +14,7 @@ export class App {
   }
 
   private middleware() {
+    this.server.use(cors());
     this.server.use(express.json()); //server.use(express.json());
     this.server.use(cookieParser()); //server.use(cookieParser());
     this.server.use(urlencoded({ extended: true }));
